@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@import "@fontsource/underdog";
+
+@theme {
+	/* https://pigment.shapefactory.co/?a=76CDA5&b=FF3786 */
+	--color-primary-light: #8CDFBA;
+	--color-primary: #76CDA5;
+	--color-primary-dark: #56B285;
+	--color-primary-darker: #389465;
+
+	--color-on-primary: #fff;
+
+	--color-secondary-light: #FF64A6;
+	--color-secondary: #FF3786;
+	--color-secondary-dakr: #EA055A;
+	--color-secondary-darker: #CC0047;
+
+	--color-on-secondary: #fff;
+
+	--font-display: "Underdog", sans-serif;
+}
