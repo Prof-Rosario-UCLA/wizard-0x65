@@ -1,0 +1,7 @@
+**
+!build/**
+!package.json
+!package-lock.json
+!app.yaml
+!next.config.ts
+!tsconfig.json

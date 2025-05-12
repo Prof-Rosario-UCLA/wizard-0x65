@@ -1,0 +1,6 @@
+env: standard
+runtime: nodejs22
+handlers:
+  - url: /.*
+    secure: always
+    script: auto

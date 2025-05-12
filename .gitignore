@@ -10,5 +10,7 @@ public
 .next
 yarn-error.log
 npm-debug.log
+build
 
 target
+*.secret
