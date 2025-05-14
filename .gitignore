@@ -11,6 +11,9 @@ public
 yarn-error.log
 npm-debug.log
 build
+app/generated/
+prisma/migrations
+.env
 
 target
 *.secret
