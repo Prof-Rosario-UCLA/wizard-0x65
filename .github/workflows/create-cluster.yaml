@@ -22,7 +22,6 @@ jobs:
       - uses: google-github-actions/setup-gcloud@1bee7de035d65ec5da40a31f8589e240eba8fde5
         with:
           project_id: ${{ secrets.GKE_PROJECT }}
-      
 
       - name: Create Cluster
         run: |
