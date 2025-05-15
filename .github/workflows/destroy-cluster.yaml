@@ -5,7 +5,7 @@ on: workflow_dispatch
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: ${{ secrets.GKE_CLUSTER }}
-  GKE_ZONE: ${{ secrets.GKE_ZONE }}
+  GKE_LOCATION: ${{ secrets.GKE_LOCATION }}
 
 jobs:
   destroy-cluster:
