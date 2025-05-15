@@ -9,6 +9,7 @@ env:
   GKE_ZONE: ${{ secrets.GKE_ZONE }}
   DEPLOYMENT_NAME: web-app
   IMAGE: web-app
+  GAR_REPO: us-west1-docker.pkg.dev/wizard
 
 jobs:
   setup-build-publish-deploy:
@@ -46,7 +47,7 @@ jobs:
     - name: deploy
       working-directory: infra
       run: |-
-        ./kustomize edit set image $IMAGE=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
+        ./kustomize edit set image $IMAGE=$GAR_REPO/$IMAGE:$GITHUB_SHA
         ./kustomize build . | kubectl apply -f -
         kubectl rollout status deployment/$DEPLOYMENT_NAME
         kubectl get services -o wide
