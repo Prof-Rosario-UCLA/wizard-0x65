@@ -1,4 +1,4 @@
-name: Start Cluster
+name: Create Cluster
 
 on: workflow_dispatch
 
@@ -8,7 +8,7 @@ env:
   GKE_ZONE: ${{ secrets.GKE_ZONE }}
 
 jobs:
-  start-cluster:
+  create-cluster:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -17,7 +17,7 @@ jobs:
       - uses: 'google-github-actions/auth@v2'
         with:
           credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
-          
+
       # Setup gcloud CLI
       - uses: google-github-actions/setup-gcloud@1bee7de035d65ec5da40a31f8589e240eba8fde5
         with:
@@ -28,7 +28,6 @@ jobs:
         run: |
           gcloud container clusters create $GKE_CLUSTER \
             --project $PROJECT_ID \
-            --zone $GKE_ZONE \
+            --location $GKE_LOCATION \
             --num-nodes 1 \
-            --machine-type=c4-standard-2 \
             --async

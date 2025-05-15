@@ -8,7 +8,7 @@ env:
   GKE_ZONE: ${{ secrets.GKE_ZONE }}
 
 jobs:
-  start-cluster:
+  destroy-cluster:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,5 +26,5 @@ jobs:
         run: |
           gcloud container clusters delete $GKE_CLUSTER \
             --project $PROJECT_ID \
-            --zone $GKE_ZONE \
+            --location $GKE_LOCATION \
             --async
