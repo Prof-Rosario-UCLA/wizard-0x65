@@ -5,7 +5,7 @@ on: workflow_dispatch
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: ${{ secrets.GKE_CLUSTER }}
-  GKE_LOCATION: ${{ secrets.GKE_LOCATION }}
+  GKE_ZONE: ${{ secrets.GKE_ZONE }}
 
 jobs:
   destroy-cluster:
@@ -26,5 +26,5 @@ jobs:
         run: |
           gcloud container clusters delete $GKE_CLUSTER \
             --project $PROJECT_ID \
-            --location $GKE_LOCATION \
+            --zone $GKE_ZONE \
             --async

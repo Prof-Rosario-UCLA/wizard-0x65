@@ -6,7 +6,7 @@ on: workflow_dispatch
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: ${{ secrets.GKE_CLUSTER }}
-  GKE_LOCATION: ${{ secrets.GKE_LOCATION }}
+  GKE_ZONE: ${{ secrets.GKE_ZONE }}
   DEPLOYMENT_NAME: web-app
   IMAGE: web-app
 
@@ -33,7 +33,7 @@ jobs:
     - uses: google-github-actions/get-gke-credentials@db150f2cc60d1716e61922b832eae71d2a45938f
       with:
         cluster_name: ${{ env.GKE_CLUSTER }}
-        location: ${{ env.GKE_LOCATION }}
+        zone: ${{ env.GKE_ZONE }}
 
     # Set up kustomize
     - name: Set up kustomize
