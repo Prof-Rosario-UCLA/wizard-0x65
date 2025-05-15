@@ -9,7 +9,7 @@ env:
   GKE_ZONE: ${{ secrets.GKE_ZONE }}
   DEPLOYMENT_NAME: web-app
   IMAGE: web-app
-  GAR_REPO: us-west1-docker.pkg.dev/wizard
+  GAR_REPO: us-west1-docker.pkg.dev/cs144-25s-ketexon/wizard
 
 jobs:
   setup-build-publish-deploy:
