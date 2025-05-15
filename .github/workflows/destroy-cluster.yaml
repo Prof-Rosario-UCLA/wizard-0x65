@@ -27,4 +27,5 @@ jobs:
           gcloud container clusters delete $GKE_CLUSTER \
             --project $PROJECT_ID \
             --zone $GKE_ZONE \
+            --quiet \
             --async
