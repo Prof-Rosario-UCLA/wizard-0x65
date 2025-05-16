@@ -74,6 +74,20 @@ class ReviveSelfCard extends TestCard {
 	}
 }
 
+class SpawnCardOnDeath extends TestCard {
+	constructor(deckCardId: string, health: number, damage: number) {
+		super(deckCardId, health, damage);
+	}
+
+	onEvent(event: GameEvent): void {
+		if (event instanceof RoundStartedEvent) {
+			const card = new TestCard("spawn", 1, 1);
+			card.team = this.team;
+			this.game.spawn(card, this.team, this.game.indexOfCard(this));
+		}
+	}
+}
+
 describe("Simulation", () => {
 	describe("Starting with no cards", () => {
 		test("Enemy loss", () => {
