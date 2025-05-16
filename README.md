@@ -53,8 +53,14 @@ You can check that it is working by running this to see a list of all active pod
 kubectl get pods
 ```
 
-The web app is not exposed publicly right now so you can use `kubectl` to port-forward:
+You can use `kubectl` to port-forward:
 ```sh
 kubectl port-forward deployment/web-app 3000:3000
 ```
 This will expose a port `localhost:3000` on your computer that corresponds to the pod running in the cluster.
+
+The app is also available publicly on an external IP:
+```sh
+kubectl get svc web-app
+```
+You can navigate to the `External IP` in your browser to access the app.
