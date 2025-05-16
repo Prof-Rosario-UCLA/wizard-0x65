@@ -87,6 +87,10 @@ export class CardBase {
 	}
 
 	onEvent(event: GameEvent): void {}
+
+	clone(): CardBase {
+		return Object.assign(Object.create(Object.getPrototypeOf(this)), this);
+	}
 };
 
 export enum GameEventType {
@@ -222,7 +226,21 @@ export class Game {
 		this.enemyDeck.forEach(card => callback(card, CardTeam.Enemy));
 	}
 
+	getDeck(team: CardTeam): CardBase[] {
+		return team === CardTeam.Player
+			? this.playerDeck
+			: this.enemyDeck;
+	}
+
 	broadcast(event: GameEvent): void {
 		this.#forEachCard((card) => card.onEvent(event));
+	}
+
+	spawn(card: CardBase, team: CardTeam, idx: number): void {
+		this.getDeck(team).splice(idx, 0, card);
+	}
+
+	indexOfCard(card: CardBase): number {
+		return this.getDeck(card.team).indexOf(card);
 	}
 };
