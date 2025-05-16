@@ -2,20 +2,20 @@
 @import "@fontsource/underdog";
 
 @theme {
-	/* https://pigment.shapefactory.co/?a=76CDA5&b=FF3786 */
-	--color-primary-light: #8CDFBA;
-	--color-primary: #76CDA5;
-	--color-primary-dark: #56B285;
-	--color-primary-darker: #389465;
+  /* https://pigment.shapefactory.co/?a=76CDA5&b=FF3786 */
+  --color-primary-light: #8cdfba;
+  --color-primary: #76cda5;
+  --color-primary-dark: #56b285;
+  --color-primary-darker: #389465;
 
-	--color-on-primary: #fff;
+  --color-on-primary: #fff;
 
-	--color-secondary-light: #FF64A6;
-	--color-secondary: #FF3786;
-	--color-secondary-dakr: #EA055A;
-	--color-secondary-darker: #CC0047;
+  --color-secondary-light: #ff64a6;
+  --color-secondary: #ff3786;
+  --color-secondary-dakr: #ea055a;
+  --color-secondary-darker: #cc0047;
 
-	--color-on-secondary: #fff;
+  --color-on-secondary: #fff;
 
-	--font-display: "Underdog", sans-serif;
+  --font-display: "Underdog", sans-serif;
 }
