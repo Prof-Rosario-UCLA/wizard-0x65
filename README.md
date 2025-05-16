@@ -36,7 +36,7 @@ To save money, we delete the cluster when it is not in use. This means we must c
 
 Now we must create the one-time services (those that will not change over the lifetime of the cluster). Run the [deploy services workflow](https://github.com/wizard-0x65/wizard-0x65/actions/workflows/deploy-services.yaml). This will deploy the Postgres database and Redis cache to the cluster.
 
-The web app deploys to the cluster on every commit. This is disabled right now since the cluster will not always be running. You can deploy it manually using [this workflow](https://github.com/wizard-0x65/wizard-0x65/actions/workflows/deploy.yaml) (make sure to enable the workflow first and disable it after you are done).
+The web app would ideally deploy to the cluster on every commit, however right now this is a manual process since the cluster will not always be running. You can deploy it manually using [this workflow](https://github.com/wizard-0x65/wizard-0x65/actions/workflows/deploy.yaml).
 
 When you are done, please [delete the cluster](https://github.com/wizard-0x65/wizard-0x65/actions/workflows/destroy-cluster.yaml).
 
@@ -52,3 +52,9 @@ You can check that it is working by running this to see a list of all active pod
 ```sh
 kubectl get pods
 ```
+
+The web app is not exposed publicly right now so you can use `kubectl` to port-forward:
+```sh
+kubectl port-forward deployment/web-app 3000:3000
+```
+This will expose a port `localhost:3000` on your computer that corresponds to the pod running in the cluster.
