@@ -55,6 +55,6 @@ kubectl get pods
 
 You can use `kubectl` to port-forward:
 ```sh
-kubectl port-forward deployment/web-app 3000:3000
+kubectl port-forward service/web-app 3000:3000
 ```
 This will expose a port `localhost:3000` on your computer that corresponds to the pod running in the cluster.
