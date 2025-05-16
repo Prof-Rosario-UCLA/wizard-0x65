@@ -58,9 +58,3 @@ You can use `kubectl` to port-forward:
 kubectl port-forward deployment/web-app 3000:3000
 ```
 This will expose a port `localhost:3000` on your computer that corresponds to the pod running in the cluster.
-
-The app is also available publicly on an external IP:
-```sh
-kubectl get svc web-app
-```
-You can navigate to the `External IP` in your browser to access the app.
