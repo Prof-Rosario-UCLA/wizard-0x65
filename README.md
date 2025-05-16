@@ -6,6 +6,7 @@ This project requires Node (v18), Rust, and wasm-pack.
 
 ## Setup
 MacOS: Install [OrbStack](https://orbstack.dev/), an app for running Docker containers on macOS.
+
 Windows: Install [Docker Desktop](https://docs.docker.com/desktop/setup/install/windows-install/).
 
 Both of these options will allow you to run Docker containers.
@@ -31,7 +32,7 @@ Now you can run `npm run dev` to start the Next.js app. You are now ready to sta
 ## Kubernetes
 To deploy to production, we use a [GKE](https://cloud.google.com/kubernetes-engine?hl=en) Kubernetes cluster. The manifests for deployments are found in the [infra](./infra) directory.
 
-To save money, we delete the cluster when it is not in use. This means we must create the cluster each time we want to test in production. To do this, run the [create cluster workflow](https://github.com/wizard-0x65/wizard-0x65/actions/workflows/create-cluster.yaml). This will take a few minutes. You can check that it is completed by visiting the GCP Console page and clicking on Kubernetes Engine -> Clusters. There should be a cluster named `wizard`.
+To save money, we delete the cluster when it is not in use. This means we must create the cluster each time we want to test in production. To do this, run the [create cluster workflow](https://github.com/wizard-0x65/wizard-0x65/actions/workflows/create-cluster.yaml). This will take a few minutes. Do not proceed until it is complete. You can check that it is completed by visiting the GCP Console page and clicking on Kubernetes Engine -> Clusters. There should be a cluster named `wizard` and it should be fully started (there should be a checkmark for `Status`).
 
 Now we must create the one-time services (those that will not change over the lifetime of the cluster). Run the [deploy services workflow](https://github.com/wizard-0x65/wizard-0x65/actions/workflows/deploy-services.yaml). This will deploy the Postgres database and Redis cache to the cluster.
 

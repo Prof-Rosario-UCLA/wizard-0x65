@@ -6,3 +6,4 @@ data:
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: password
   POSTGRES_DB: wizard
+  PGDATA: /var/lib/postgresql/data/pgdata
