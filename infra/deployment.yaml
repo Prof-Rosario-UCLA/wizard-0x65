@@ -17,5 +17,10 @@ spec:
       containers:
         - name: web-app
           image: web-app
+          env:
+            - name: DATABASE_URL
+              value: postgres://postgres:password@postgres:5432/postgres
+            - name: REDIS_URL
+              value: redis://redis:6379
           ports:
             - containerPort: 3000
