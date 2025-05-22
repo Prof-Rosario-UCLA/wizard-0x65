@@ -46,11 +46,11 @@ function Card({ name, scale = 1, health = 0, dmg = 0 }) {
     return (
         <>
             <div
-                className="origin-top-left inline-block"
+                className="origin-top-left inline-block "
                 style={{ transform: `scale(${scale})` }}
             >
                 <div className="flex">
-                    <div className="flex-col border rounded-md p-4">
+                    <div className="flex-col border rounded-md p-4 bg-white">
                         <div id="banner" className="h-32 w-32 relative">
                             <Image
                                 src={`/cards/${name}.png`}
