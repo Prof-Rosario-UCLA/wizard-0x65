@@ -13,9 +13,12 @@ export default function Shop() {
             <div className="px-24 py-10">
                 <div className="border w-full h-full relative">
                     <Heading>Shop</Heading>
-                    <div className="absolute top-0 right-0 text-xl">
+                    <Link
+                        href="/game"
+                        className="absolute top-0 right-0 text-xl"
+                    >
                         <Button>Start game</Button>
-                    </div>
+                    </Link>
 
                     {/* <Link href="/">
                         <Button>Back</Button>
