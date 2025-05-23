@@ -16,9 +16,7 @@ datasource db {
 
 model Player {
   id         Int     @id @default(autoincrement())
-  googleId   String  @unique
-  email      String? @unique
-  username   String?
+  email      String @unique
   games      Game[]
 }
 
