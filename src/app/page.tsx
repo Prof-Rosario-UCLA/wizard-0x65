@@ -5,7 +5,7 @@ import { Simulation } from "./components/simulation";
 
 export default function Home() {
     return (
-        <main>
+        <main className="h-screen w-full">
             <h1>Wizard 0x65</h1>
             <Simulation />
             {/* 
