@@ -21,7 +21,13 @@ Create a .env file and add the following lines:
 ```
 DATABASE_URL=postgresql://postgres:password@localhost:5432/wizard
 REDIS_URL=redis://localhost:6379
+AUTH_GOOGLE_ID=...
+AUTH_GOOGLE_SECRET=...
 ```
+
+The Google auth credentials can be found on GCP Console's [API and Services/Credentials](https://console.cloud.google.com/apis/credentials?referrer=search&inv=1&invt=AbyX2w&project=cs144-25s-ketexon).
+
+`next-auth` also requries `npx auth init` to be run once to generate a local secret key.
 
 Run `docker compose up` to start the database and cache. You can run `docker compose down` when you are finished.
 
