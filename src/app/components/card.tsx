@@ -41,8 +41,13 @@
 // export { Card };
 
 import Image from "next/image";
+import { CardMetadata } from "~/simulation/simulation";
 
-function Card({ name, health = 0, dmg = 0 }) {
+interface CardProps {
+    card: CardMetadata;
+}
+
+function Card({ card }: CardProps) {
     return (
         <>
             <div className="">
@@ -50,7 +55,7 @@ function Card({ name, health = 0, dmg = 0 }) {
                     <div className="flex-col border rounded-md p-4 bg-white">
                         <div id="banner" className="h-32 w-32 relative">
                             <Image
-                                src={`/cards/${name}.png`}
+                                src={`/cards/${card.name}.png`}
                                 alt="card image"
                                 fill={true}
                                 className="object-cover"
@@ -59,7 +64,7 @@ function Card({ name, health = 0, dmg = 0 }) {
                         <div className="flex gap-8">
                             <div id="dmg" className="h-12 w-12 relative">
                                 <div className="z-5 absolute top-1 left-3 font-bold text-3xl">
-                                    {dmg}
+                                    {card.baseDamage}
                                 </div>
                                 <Image
                                     src={`/cards/ui_dmg.png`}
@@ -71,7 +76,7 @@ function Card({ name, health = 0, dmg = 0 }) {
                             <div id="health" className="h-12 w-12 relative">
                                 {/* todo: give white text outline */}
                                 <div className="z-5 absolute top-1 left-3.5 font-bold text-3xl">
-                                    {health}
+                                    {card.baseHealth}
                                 </div>
 
                                 <Image
