@@ -55,7 +55,7 @@ function Card({ card }: CardProps) {
                     <div className="flex-col border rounded-md p-4 bg-white">
                         <div id="banner" className="h-32 w-32 relative">
                             <Image
-                                src={`/cards/${card.name}.png`}
+                                src={`/cards/${card.id}.png`}
                                 alt="card image"
                                 fill={true}
                                 className="object-cover"

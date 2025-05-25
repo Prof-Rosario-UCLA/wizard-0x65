@@ -8,6 +8,7 @@
 //     );
 // }
 
+import { JavaCard } from "~/simulation/cards";
 import { Card } from "./card";
 
 // export { Simulation };
@@ -27,7 +28,7 @@ export function Simulation(props: SimulationProps) {
                     >
                         <div className="flex gap-4">
                             {Array.from({ length: 4 }).map((_, i) => (
-                                <Card key={i} name="ocaml" health={5} dmg={2} />
+                                <Card key={i} card={JavaCard.metadata} />
                             ))}
                         </div>
                     </div>
@@ -38,12 +39,7 @@ export function Simulation(props: SimulationProps) {
                         <div className="flex gap-4">
                             {Array.from({ length: 4 }).map((_, i) => (
                                 <div className="shrink" key={i}>
-                                    <Card
-                                        key={i}
-                                        name="ocaml"
-                                        health={5}
-                                        dmg={2}
-                                    />
+                                    <Card key={i} card={JavaCard.metadata} />
                                 </div>
                             ))}
                         </div>
