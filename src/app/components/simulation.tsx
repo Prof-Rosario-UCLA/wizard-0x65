@@ -14,6 +14,41 @@ import { Heading } from "./heading";
 
 // export { Simulation };
 
+function SimulationPlayer({ isPlayer }) {
+    return (
+        <>
+            <div className="bg-gray-500 flex w-full h-full justify-between relative">
+                <div className="absolute top-5 left-5">
+                    <Heading>{isPlayer ? "Player" : "Enemy"}</Heading>
+                </div>
+                <div
+                    id="player"
+                    className="min-w-[45rem] bg-gray-200 h-full overflow-hidden flex justify-center items-center shrink"
+                >
+                    <div className="flex gap-4">
+                        {(isPlayer
+                            ? [...Array.from({ length: 4 })].reverse()
+                            : Array.from({ length: 4 })
+                        ).map((_, i) => {
+                            const index = isPlayer ? 3 - i : i;
+                            return (
+                                <div
+                                    className="flex flex-col items-center"
+                                    key={i}
+                                >
+                                    <Card card={JavaCard.metadata} />
+                                    <div className="h-[2px] mt-4 mb-2 w-full bg-black"></div>
+                                    <div>{index}</div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+        </>
+    );
+}
+
 export type SimulationProps = {};
 
 export function Simulation(props: SimulationProps) {
@@ -21,41 +56,9 @@ export function Simulation(props: SimulationProps) {
 
     return (
         <>
-            <div className="flex justify-center h-full">
-                <div className="bg-gray-500 flex flex-col xl:flex-row w-full justify-between relative">
-                    <div className="absolute top-5 left-5">
-                        <Heading>Player</Heading>
-                    </div>
-                    <div
-                        id="player"
-                        className="min-w-[45rem] bg-gray-200 h-full overflow-hidden flex justify-center items-center shrink"
-                    >
-                        <div className="flex gap-4">
-                            {Array.from({ length: 4 }).map((_, i) => (
-                                <div
-                                    className="flex flex-col items-center"
-                                    key={i}
-                                >
-                                    <Card card={JavaCard.metadata} />
-                                    <div className="h-[2px] mt-4 mb-2 w-full bg-black"></div>
-                                    <div>{i * 2}</div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                    <div
-                        id="enemy"
-                        className="min-w-[45rem] bg-gray-300 h-full overflow-hidden flex justify-center items-center shrink"
-                    >
-                        <div className="flex gap-4">
-                            {Array.from({ length: 4 }).map((_, i) => (
-                                <div className="shrink" key={i}>
-                                    <Card key={i} card={JavaCard.metadata} />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
+            <div className="flex flex-col xl:flex-row justify-center h-full">
+                <SimulationPlayer isPlayer={true} />
+                <SimulationPlayer isPlayer={false} />
             </div>
         </>
     );
