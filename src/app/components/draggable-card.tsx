@@ -5,12 +5,13 @@ interface DraggableCardProps extends CardProps {
     id: UniqueIdentifier;
 }
 export function DraggableCard(props: DraggableCardProps) {
-    const { attributes, listeners, setNodeRef, transform } = useDraggable({
-        id: props.id,
-        data: {
-            cardId: props.card.id,
-        },
-    });
+    const { attributes, listeners, setNodeRef, transform, isDragging } =
+        useDraggable({
+            id: props.id,
+            data: {
+                cardId: props.card.id,
+            },
+        });
 
     const style = transform
         ? {
@@ -19,7 +20,12 @@ export function DraggableCard(props: DraggableCardProps) {
         : undefined;
 
     return (
-        <div style={style} {...listeners} {...attributes}>
+        <div
+            className={isDragging ? "z-6" : ""}
+            style={style}
+            {...listeners}
+            {...attributes}
+        >
             <Card ref={setNodeRef} {...props} />
         </div>
     );

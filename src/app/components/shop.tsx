@@ -10,11 +10,20 @@ import { Button } from "./button";
 interface ShopProps {
     cards: CardMetadata[];
     deck: (CardMetadata | null)[];
+    bytes: number;
+    health: number;
     takeCard(cardId: string, position: number): void;
     beginRound(): void;
 }
 
-export function Shop({ cards, deck, takeCard, beginRound }: ShopProps) {
+export function Shop({
+    cards,
+    deck,
+    bytes,
+    health,
+    takeCard,
+    beginRound,
+}: ShopProps) {
     const dndId = useId();
     return (
         <DndContext
@@ -34,7 +43,7 @@ export function Shop({ cards, deck, takeCard, beginRound }: ShopProps) {
             }}
         >
             <div className="flex flex-col">
-                <h1 className="relative mx-auto text-3xl text-white bg-neutral-600 inline-block py-1 px-16 top-7 z-10">
+                <h1 className="relative mx-auto text-3xl text-white bg-neutral-600 inline-block py-1 px-16 top-7">
                     Shop
                 </h1>
                 <div className="flex bg-neutral-200 p-5">
@@ -67,8 +76,12 @@ export function Shop({ cards, deck, takeCard, beginRound }: ShopProps) {
                         </div>
 
                         <div className="flex gap-2 mt-4 text-white">
-                            <p className="bg-neutral-500 flex-1 p-4">8 Bytes</p>
-                            <p className="bg-neutral-500 flex-1 p-4">Lives</p>
+                            <p className="bg-neutral-500 flex-1 p-4">
+                                {bytes} Bytes
+                            </p>
+                            <p className="bg-neutral-500 flex-1 p-4">
+                                {health} Lives
+                            </p>
                         </div>
                     </div>
                 </div>

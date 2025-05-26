@@ -1,45 +1,61 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { getPlayer } from "./auth";
 import { prisma } from "./db";
-import { DeckCard, GameStatus, RoundStatus } from "./app/generated/prisma";
+import {
+    DeckCard,
+    GameStatus,
+    RoundStatus,
+    PrismaClient,
+} from "./app/generated/prisma";
 import { cards } from "./simulation/cards";
 import { Deck } from "./app/types";
+import { Game, GameState, WinState } from "./simulation/simulation";
 
 function getRandomCard() {
     const cardIds = Object.keys(cards);
     return cardIds[Math.floor(Math.random() * cardIds.length)];
 }
 
+function generateShop() {
+    return Array.from({ length: 8 }, (_, i) => ({
+        cardId: getRandomCard(),
+        position: i,
+    }));
+}
+
+export async function getRandomDeckId(prisma: Pick<PrismaClient, "$queryRaw">) {
+    const [{ deckId }] = await prisma.$queryRaw<
+        [{ deckId: number }]
+    >`SELECT "deckId" FROM "DeckCard" GROUP BY "deckId" HAVING count(*) = 4 ORDER BY RANDOM() LIMIT 1`;
+    return deckId;
+}
+
 export async function createGame() {
     const player = await getPlayer({ shouldRedirect: false });
     if (!player) throw new Error("Player not found");
 
-    const game = await prisma.game.create({
-        data: {
-            status: GameStatus.IN_PROGRESS,
-            playerId: player.id,
+    return prisma.$transaction(async (tx) => {
+        const randomDeckId = await getRandomDeckId(tx);
 
-            rounds: {
-                create: {
-                    playerDeck: { create: {} },
-                    number: 1,
-                    bytes: 8,
-                    health: 3,
-                    status: RoundStatus.IN_PROGRESS,
-                    shopCards: {
-                        create: Array.from({ length: 8 }, (_, i) => ({
-                            cardId: getRandomCard(),
-                            position: i,
-                        })),
+        return tx.game.create({
+            data: {
+                status: GameStatus.IN_PROGRESS,
+                playerId: player.id,
+                rounds: {
+                    create: {
+                        number: 0,
+                        bytes: 8,
+                        health: 3,
+                        status: RoundStatus.IN_PROGRESS,
+                        playerDeck: { create: {} },
+                        enemyDeck: { connect: { id: randomDeckId } },
+                        shopCards: { create: generateShop() },
                     },
                 },
             },
-        },
+        });
     });
-
-    redirect(`/game/${game.id}`);
 }
 
 export async function addCardToDeck({
@@ -132,6 +148,8 @@ export async function getGameState(gameId: number) {
         deck,
         shop: latestRound.shopCards,
         roundStatus: latestRound.status,
+        bytes: latestRound.bytes,
+        health: latestRound.health,
     };
 }
 
@@ -139,6 +157,84 @@ export async function beginRound(gameId: number) {
     const player = await getPlayer({ shouldRedirect: false });
     if (!player) throw new Error("Must be logged in.");
 
-    // TODO: run simulation with deck
-    return true;
+    const gameState = await prisma.game.findUnique({
+        where: { id: gameId },
+        include: {
+            rounds: {
+                orderBy: { number: "desc" },
+                take: 1,
+                include: {
+                    enemyDeck: { include: { cards: true } },
+                    playerDeck: { include: { cards: true } },
+                },
+            },
+        },
+    });
+    const latestRound = gameState?.rounds[0];
+    if (!latestRound) throw new Error("Game not found.");
+    if (latestRound.status !== RoundStatus.IN_PROGRESS)
+        throw new Error("Cannot begin a round that is not in progress.");
+
+    const playerDeck = latestRound.playerDeck.cards.map((card: DeckCard) => {
+        const Card = cards[card.id];
+        return new Card();
+    });
+    const enemyDeck = latestRound.enemyDeck.cards.map((card: DeckCard) => {
+        const Card = cards[card.id];
+        return new Card();
+    });
+    const game = new Game(playerDeck, enemyDeck);
+
+    while (game.gameState !== GameState.Over) game.step();
+
+    return prisma.$transaction(async (tx) => {
+        const randomDeckId = await getRandomDeckId(tx);
+
+        return prisma.game.update({
+            where: { id: gameId },
+            data: {
+                status:
+                    latestRound.health <= 1
+                        ? GameStatus.COMPLETED
+                        : GameStatus.IN_PROGRESS,
+                rounds: {
+                    update: {
+                        where: {
+                            id: latestRound.id,
+                            status: RoundStatus.IN_PROGRESS,
+                        },
+                        data: {
+                            status:
+                                game.winState === WinState.Enemy
+                                    ? RoundStatus.LOSE
+                                    : RoundStatus.WIN,
+                        },
+                    },
+                    create: {
+                        number: latestRound.number + 1,
+                        bytes: latestRound.bytes,
+                        health:
+                            game.winState === WinState.Enemy
+                                ? latestRound.health - 1
+                                : latestRound.health,
+                        status: RoundStatus.IN_PROGRESS,
+                        playerDeck: {
+                            create: {
+                                cards: {
+                                    create: latestRound.playerDeck.cards.map(
+                                        (card) => ({
+                                            id: card.id,
+                                            position: card.position,
+                                        }),
+                                    ),
+                                },
+                            },
+                        },
+                        enemyDeck: { connect: { id: randomDeckId } },
+                        shopCards: { create: generateShop() },
+                    },
+                },
+            },
+        });
+    });
 }

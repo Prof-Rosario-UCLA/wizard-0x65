@@ -20,8 +20,8 @@ export function DroppableCard({ id, card, position }: DroppableCardProps) {
     return (
         <div
             ref={setNodeRef}
-            className={`flex-col border rounded-md p-4 ${
-                isOver ? "bg-green-500" : "bg-white"
+            className={`border-5 ${
+                isOver ? "border-green-500" : "border-neutral-500"
             }`}
         >
             {card ? (

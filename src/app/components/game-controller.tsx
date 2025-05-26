@@ -6,14 +6,14 @@ import { Simulation } from "./simulation";
 import { addCardToDeck, beginRound, getGameState } from "~/actions";
 import { useState } from "react";
 import { Deck } from "../types";
-import { GameStatus } from "../generated/prisma";
+import { Card } from "./card";
 
 interface GameControllerProps {
     gameState: NonNullable<Awaited<ReturnType<typeof getGameState>>>;
 }
 
 export function GameController({ gameState }: GameControllerProps) {
-    const { status, shop } = gameState;
+    const { shop } = gameState;
     const [deck, setDeck] = useState<Deck>(gameState.deck);
     const [stage, setStage] = useState<"shop" | "simulation" | "complete">(
         gameState.status === "IN_PROGRESS" ? "shop" : "complete",
@@ -26,6 +26,8 @@ export function GameController({ gameState }: GameControllerProps) {
                 deck={deck.map((card) =>
                     card ? cards[card.id].metadata : null,
                 )}
+                bytes={gameState.bytes}
+                health={gameState.health}
                 takeCard={async (cardId, position) => {
                     await addCardToDeck({
                         gameId: gameState.id,
@@ -48,5 +50,16 @@ export function GameController({ gameState }: GameControllerProps) {
 
     if (stage === "simulation") return <Simulation />;
 
-    if (stage === "complete") return <div>Game complete.</div>;
+    if (stage === "complete")
+        return (
+            <div>
+                <h2 className="text-3xl">Game Complete</h2>
+                <div className="inline-grid grid-cols-4 gap-2">
+                    {deck.map((card, i) => {
+                        if (!card) return null;
+                        return <Card key={i} card={cards[card.id].metadata} />;
+                    })}
+                </div>
+            </div>
+        );
 }
