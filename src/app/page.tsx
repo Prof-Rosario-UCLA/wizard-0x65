@@ -1,18 +1,27 @@
-import Link from "next/link";
+import { getPlayer } from "~/auth";
 import { Button } from "./components/button";
-import { Card } from "./components/card";
-import { Simulation } from "./components/simulation";
+import Link from "next/link";
+import { StartGameButton } from "./components/start-game-button";
 
-export default function Home() {
+export default async function Home() {
+    const player = await getPlayer({ shouldRedirect: false });
+
     return (
-        <main className="h-screen w-full">
-            <h1>Wizard 0x65</h1>
-            <Simulation />
-            {/* 
-            <Link href="/shop">
-                <Button>Hello</Button>
-            </Link>
-            <Card name="ocaml" scale={2} health={5} dmg={2} /> */}
+        <main>
+            <div className="h-screen flex flex-col gap-2 items-center justify-center">
+                <h1 className="text-center font-bold text-3xl">Wizard 0x65</h1>
+                {player ? (
+                    <StartGameButton />
+                ) : (
+                    <Button
+                        as={Link}
+                        className="cursor-pointer"
+                        href="/api/auth/login"
+                    >
+                        Login
+                    </Button>
+                )}
+            </div>
         </main>
     );
 }

@@ -16,7 +16,9 @@ export type GetUserParams = {
     shouldRedirect?: boolean;
 };
 
-export async function getPlayer(params?: GetUserParams): Promise<Player> {
+export async function getPlayer(
+    params?: GetUserParams,
+): Promise<Player | null> {
     const { shouldRedirect = true } = params ?? {};
 
     const session = await auth();

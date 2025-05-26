@@ -30,7 +30,6 @@ model Game {
 
 enum GameStatus {
   SHOP
-  PLAYING
   COMPLETED
 }
 
@@ -42,10 +41,10 @@ model Round {
   gameId Int
   game   Game @relation(fields: [gameId], references: [id])
 
-  playerDeckId Int
-  enemyDeckId  Int
-  playerDeck   Deck @relation("PlayerDeck", fields: [playerDeckId], references: [id])
-  enemyDeck    Deck @relation("EnemyDeck", fields: [enemyDeckId], references: [id])
+  playerDeckId Int?
+  enemyDeckId  Int?
+  playerDeck   Deck? @relation("PlayerDeck", fields: [playerDeckId], references: [id])
+  enemyDeck    Deck? @relation("EnemyDeck", fields: [enemyDeckId], references: [id])
 
   shopCards ShopCard[]
 
@@ -56,6 +55,7 @@ model Round {
 }
 
 enum RoundStatus {
+  IN_PROGRESS
   WIN
   LOSE
   DRAW
@@ -64,22 +64,24 @@ enum RoundStatus {
 model Deck {
   id Int @id @default(autoincrement())
 
-  Card         Card[]
-  playerRounds Round[] @relation("PlayerDeck")
-  enemyRounds  Round[] @relation("EnemyDeck")
+  cards        DeckCard[]
+  playerRounds Round[]    @relation("PlayerDeck")
+  enemyRounds  Round[]    @relation("EnemyDeck")
 }
 
-model Card {
-  cardId   Int @id @default(autoincrement())
+model DeckCard {
+  id       String
   deckId   Int
   position Int
 
   deck Deck @relation(fields: [deckId], references: [id])
+
+  @@unique([deckId, position])
 }
 
 model ShopCard {
-  id       Int @id @default(autoincrement())
-  cardId   Int
+  id       Int    @id @default(autoincrement())
+  cardId   String
   position Int
 
   roundId Int

@@ -137,7 +137,7 @@ export class TempleOSCard extends CardBase {
     static get metadata(): CardMetadata {
         return {
             id: "os_temple",
-            name: "TemplsOS",
+            name: "TempleOS",
             description: `
                 Kills self on start.
                 `,
