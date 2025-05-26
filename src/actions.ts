@@ -253,3 +253,25 @@ export async function beginRound(gameId: number) {
         });
     });
 }
+
+export async function getAverageGameLength() {
+    const player = await getPlayer({ shouldRedirect: false });
+    if (!player) throw new Error("Must be logged in.");
+
+    const games = await prisma.game.findMany({
+        where: { playerId: player.id },
+        select: {
+            _count: {
+                select: {
+                    rounds: true,
+                },
+            },
+        },
+    });
+
+    const totalRounds = games.reduce((sum, game) => {
+        return sum + game._count.rounds;
+    }, 0);
+
+    return totalRounds / games.length;
+}
