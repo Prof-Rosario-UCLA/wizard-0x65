@@ -18,7 +18,7 @@ export async function createGame() {
 
     const game = await prisma.game.create({
         data: {
-            status: "SHOP",
+            status: GameStatus.IN_PROGRESS,
             playerId: player.id,
 
             rounds: {
@@ -70,7 +70,7 @@ export async function addCardToDeck({
         });
         const latestRound = game?.rounds[0];
         if (!game || !latestRound) throw new Error("Game not found.");
-        if (game.status !== GameStatus.SHOP)
+        if (game.status !== GameStatus.IN_PROGRESS)
             throw new Error("Deck cannot be edited.");
 
         await tx.deckCard.upsert({
@@ -90,7 +90,7 @@ export async function addCardToDeck({
 }
 
 export async function getGameState(gameId: number) {
-    const player = await getPlayer();
+    const player = await getPlayer({ shouldRedirect: false });
     if (!player) return null;
 
     const game = await prisma.game.findUnique({
@@ -133,4 +133,12 @@ export async function getGameState(gameId: number) {
         shop: latestRound.shopCards,
         roundStatus: latestRound.status,
     };
+}
+
+export async function beginRound(gameId: number) {
+    const player = await getPlayer({ shouldRedirect: false });
+    if (!player) throw new Error("Must be logged in.");
+
+    // TODO: run simulation with deck
+    return true;
 }

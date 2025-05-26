@@ -29,7 +29,7 @@ model Game {
 }
 
 enum GameStatus {
-  SHOP
+  IN_PROGRESS
   COMPLETED
 }
 

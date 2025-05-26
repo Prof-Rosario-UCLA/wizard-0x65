@@ -11,7 +11,7 @@ export default async function GamePage({
     if (!gameState) return <div>Game not found.</div>;
 
     return (
-        <main className="mx-20">
+        <main className="mx-20 mb-5">
             <GameController gameState={gameState} />
         </main>
     );

@@ -1,19 +1,20 @@
 "use client";
 
 import { CardMetadata } from "~/simulation/simulation";
-import { Card } from "./card";
 import { DndContext } from "@dnd-kit/core";
 import { DroppableCard } from "./droppable-card";
 import { DraggableCard } from "./draggable-card";
 import { useId } from "react";
+import { Button } from "./button";
 
 interface ShopProps {
     cards: CardMetadata[];
     deck: (CardMetadata | null)[];
     takeCard(cardId: string, position: number): void;
+    beginRound(): void;
 }
 
-export function Shop({ cards, deck, takeCard }: ShopProps) {
+export function Shop({ cards, deck, takeCard, beginRound }: ShopProps) {
     const dndId = useId();
     return (
         <DndContext
@@ -72,6 +73,13 @@ export function Shop({ cards, deck, takeCard }: ShopProps) {
                     </div>
                 </div>
             </div>
+            <Button
+                className="mt-2 not-disabled:cursor-pointer disabled:opacity-60"
+                onClick={beginRound}
+                disabled={deck.some((card) => !card)}
+            >
+                Begin Round
+            </Button>
         </DndContext>
     );
 }

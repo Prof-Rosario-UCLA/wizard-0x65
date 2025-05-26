@@ -12,13 +12,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     ],
 });
 
-export type GetUserParams = {
-    shouldRedirect?: boolean;
+export type GetUserParams<TShouldRedirect extends boolean> = {
+    shouldRedirect?: TShouldRedirect;
 };
 
-export async function getPlayer(
-    params?: GetUserParams,
-): Promise<Player | null> {
+export async function getPlayer<TShouldRedirect extends boolean = true>(
+    params?: GetUserParams<TShouldRedirect>,
+): Promise<TShouldRedirect extends true ? Player : Player | null> {
     const { shouldRedirect = true } = params ?? {};
 
     const session = await auth();
@@ -27,7 +27,7 @@ export async function getPlayer(
         if (shouldRedirect) {
             redirect("/login");
         }
-        return null;
+        return null as any;
     }
     const prisma = new PrismaClient();
     const player = prisma.player.upsert({
