@@ -1,5 +1,1 @@
-export interface CardProps {
-    id: string;
-    health: number;
-    damage: number;
-}
+export type Deck = ({ id: string } | null)[];

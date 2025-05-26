@@ -41,16 +41,17 @@
 // export { Card };
 
 import Image from "next/image";
+import { forwardRef } from "react";
 import { CardMetadata } from "~/simulation/simulation";
 
-interface CardProps {
+export interface CardProps {
     card: CardMetadata;
 }
 
-function Card({ card }: CardProps) {
+const Card = forwardRef<HTMLDivElement, CardProps>(({ card }, ref) => {
     return (
         <>
-            <div className="">
+            <div ref={ref} className="">
                 <div className="flex">
                     <div className="flex-col border rounded-md p-4 bg-white">
                         <div id="banner" className="h-32 w-32 relative">
@@ -92,6 +93,6 @@ function Card({ card }: CardProps) {
             </div>
         </>
     );
-}
+});
 
 export { Card };

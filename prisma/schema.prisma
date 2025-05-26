@@ -41,9 +41,9 @@ model Round {
   gameId Int
   game   Game @relation(fields: [gameId], references: [id])
 
-  playerDeckId Int?
+  playerDeckId Int
   enemyDeckId  Int?
-  playerDeck   Deck? @relation("PlayerDeck", fields: [playerDeckId], references: [id])
+  playerDeck   Deck  @relation("PlayerDeck", fields: [playerDeckId], references: [id])
   enemyDeck    Deck? @relation("EnemyDeck", fields: [enemyDeckId], references: [id])
 
   shopCards ShopCard[]
