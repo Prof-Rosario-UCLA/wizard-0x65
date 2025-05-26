@@ -1,19 +1,20 @@
 "use client";
 
 import { createGame } from "~/actions";
-import { Button } from "./button";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { LoadingButton } from "./loading-button";
 
 export function StartGameButton() {
+    const router = useRouter();
+
     return (
-        <Button
-            className="cursor-pointer"
+        <LoadingButton
             onClick={async () => {
                 const { id } = await createGame();
-                redirect(`/game/${id}`);
+                router.push(`/game/${id}`);
             }}
         >
             Start Game
-        </Button>
+        </LoadingButton>
     );
 }

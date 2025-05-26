@@ -3,27 +3,34 @@
 import { Shop } from "./shop";
 import { cards } from "~/simulation/cards";
 import { Simulation } from "./simulation";
-import { addCardToDeck, beginRound, getGameState } from "~/actions";
-import { useState } from "react";
-import { Deck } from "../types";
-import { Card } from "./card";
+import { addCardToDeck, beginRound, ClientGameState } from "~/actions";
+import { useEffect, useState } from "react";
+import { GameSummary } from "./game-summary";
+import { GameStatus } from "../generated/prisma";
 
 interface GameControllerProps {
-    gameState: NonNullable<Awaited<ReturnType<typeof getGameState>>>;
+    gameState: ClientGameState;
 }
 
-export function GameController({ gameState }: GameControllerProps) {
-    const { shop } = gameState;
-    const [deck, setDeck] = useState<Deck>(gameState.deck);
+export function GameController({
+    gameState: defaultGameState,
+}: GameControllerProps) {
+    const [gameState, setGameState] = useState(defaultGameState);
     const [stage, setStage] = useState<"shop" | "simulation" | "complete">(
-        gameState.status === "IN_PROGRESS" ? "shop" : "complete",
+        gameState.status === GameStatus.IN_PROGRESS ? "shop" : "complete",
     );
+
+    useEffect(() => {
+        setGameState(defaultGameState);
+    }, [defaultGameState]);
 
     if (stage === "shop") {
         return (
             <Shop
-                cards={shop.map((card) => cards[card.cardId].metadata)}
-                deck={deck.map((card) =>
+                cards={gameState.shop.map(
+                    (card) => cards[card.cardId].metadata,
+                )}
+                deck={gameState.deck.map((card) =>
                     card ? cards[card.id].metadata : null,
                 )}
                 bytes={gameState.bytes}
@@ -34,10 +41,13 @@ export function GameController({ gameState }: GameControllerProps) {
                         cardId,
                         position,
                     });
-                    setDeck((deck) => {
-                        const newDeck = [...deck];
+                    setGameState((gameState) => {
+                        const newDeck = [...gameState.deck];
                         newDeck[position] = { id: cardId };
-                        return newDeck;
+                        return {
+                            ...gameState,
+                            deck: newDeck,
+                        };
                     });
                 }}
                 beginRound={async () => {
@@ -51,15 +61,5 @@ export function GameController({ gameState }: GameControllerProps) {
     if (stage === "simulation") return <Simulation />;
 
     if (stage === "complete")
-        return (
-            <div>
-                <h2 className="text-3xl">Game Complete</h2>
-                <div className="inline-grid grid-cols-4 gap-2">
-                    {deck.map((card, i) => {
-                        if (!card) return null;
-                        return <Card key={i} card={cards[card.id].metadata} />;
-                    })}
-                </div>
-            </div>
-        );
+        return <GameSummary deck={gameState.deck} rounds={gameState.rounds} />;
 }

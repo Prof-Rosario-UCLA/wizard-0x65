@@ -6,6 +6,7 @@ import { DroppableCard } from "./droppable-card";
 import { DraggableCard } from "./draggable-card";
 import { useId } from "react";
 import { Button } from "./button";
+import { LoadingButton } from "./loading-button";
 
 interface ShopProps {
     cards: CardMetadata[];
@@ -62,17 +63,14 @@ export function Shop({
                         </h2>
 
                         <div className="grid grid-cols-2 gap-2">
-                            {deck.map((card, i) => {
-                                const cardProp = card ?? undefined;
-                                return (
-                                    <DroppableCard
-                                        key={i}
-                                        id={`shop:deck:${i}`}
-                                        position={i}
-                                        card={cardProp}
-                                    />
-                                );
-                            })}
+                            {deck.map((card, i) => (
+                                <DroppableCard
+                                    key={i}
+                                    id={`shop:deck:${i}`}
+                                    position={i}
+                                    card={card ?? undefined}
+                                />
+                            ))}
                         </div>
 
                         <div className="flex gap-2 mt-4 text-white">
@@ -86,13 +84,13 @@ export function Shop({
                     </div>
                 </div>
             </div>
-            <Button
-                className="mt-2 not-disabled:cursor-pointer disabled:opacity-60"
+            <LoadingButton
+                className="mt-2"
                 onClick={beginRound}
                 disabled={deck.some((card) => !card)}
             >
                 Begin Round
-            </Button>
+            </LoadingButton>
         </DndContext>
     );
 }

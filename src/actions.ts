@@ -116,8 +116,7 @@ export async function getGameState(gameId: number) {
         },
         include: {
             rounds: {
-                orderBy: { number: "desc" },
-                take: 1,
+                orderBy: { number: "asc" },
                 include: {
                     shopCards: {
                         orderBy: { position: "asc" },
@@ -135,7 +134,7 @@ export async function getGameState(gameId: number) {
         },
     });
 
-    const latestRound = game?.rounds[0];
+    const latestRound = game?.rounds[game.rounds.length - 1];
     if (!game || !latestRound) return null;
 
     const deck: Deck = Array.from({ length: 4 }, () => null);
@@ -146,11 +145,27 @@ export async function getGameState(gameId: number) {
         id: game.id,
         status: game.status,
         deck,
+        rounds: game.rounds,
         shop: latestRound.shopCards,
         roundStatus: latestRound.status,
         bytes: latestRound.bytes,
         health: latestRound.health,
     };
+}
+
+export type ClientGameState = NonNullable<
+    Awaited<ReturnType<typeof getGameState>>
+>;
+
+function winStateToRoundStatus(winState: WinState): RoundStatus {
+    switch (winState) {
+        case WinState.Player:
+            return RoundStatus.WIN;
+        case WinState.Enemy:
+            return RoundStatus.LOSE;
+        case WinState.Stalemate:
+            return RoundStatus.DRAW;
+    }
 }
 
 export async function beginRound(gameId: number) {
@@ -190,13 +205,16 @@ export async function beginRound(gameId: number) {
     return prisma.$transaction(async (tx) => {
         const randomDeckId = await getRandomDeckId(tx);
 
+        const newHealth =
+            game.winState === WinState.Enemy
+                ? latestRound.health - 1
+                : latestRound.health;
+        const isOver = newHealth <= 0;
+
         return prisma.game.update({
             where: { id: gameId },
             data: {
-                status:
-                    latestRound.health <= 1
-                        ? GameStatus.COMPLETED
-                        : GameStatus.IN_PROGRESS,
+                status: isOver ? GameStatus.COMPLETED : GameStatus.IN_PROGRESS,
                 rounds: {
                     update: {
                         where: {
@@ -204,35 +222,32 @@ export async function beginRound(gameId: number) {
                             status: RoundStatus.IN_PROGRESS,
                         },
                         data: {
-                            status:
-                                game.winState === WinState.Enemy
-                                    ? RoundStatus.LOSE
-                                    : RoundStatus.WIN,
+                            health: newHealth,
+                            status: winStateToRoundStatus(game.winState),
                         },
                     },
-                    create: {
-                        number: latestRound.number + 1,
-                        bytes: latestRound.bytes,
-                        health:
-                            game.winState === WinState.Enemy
-                                ? latestRound.health - 1
-                                : latestRound.health,
-                        status: RoundStatus.IN_PROGRESS,
-                        playerDeck: {
-                            create: {
-                                cards: {
-                                    create: latestRound.playerDeck.cards.map(
-                                        (card) => ({
-                                            id: card.id,
-                                            position: card.position,
-                                        }),
-                                    ),
-                                },
-                            },
-                        },
-                        enemyDeck: { connect: { id: randomDeckId } },
-                        shopCards: { create: generateShop() },
-                    },
+                    create: isOver
+                        ? undefined
+                        : {
+                              number: latestRound.number + 1,
+                              bytes: latestRound.bytes,
+                              health: newHealth,
+                              status: RoundStatus.IN_PROGRESS,
+                              playerDeck: {
+                                  create: {
+                                      cards: {
+                                          create: latestRound.playerDeck.cards.map(
+                                              (card) => ({
+                                                  id: card.id,
+                                                  position: card.position,
+                                              }),
+                                          ),
+                                      },
+                                  },
+                              },
+                              enemyDeck: { connect: { id: randomDeckId } },
+                              shopCards: { create: generateShop() },
+                          },
                 },
             },
         });

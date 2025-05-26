@@ -17,6 +17,7 @@ export function DroppableCard({ id, card, position }: DroppableCardProps) {
             position,
         },
     });
+
     return (
         <div
             ref={setNodeRef}
