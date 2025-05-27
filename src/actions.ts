@@ -258,20 +258,16 @@ export async function getAverageGameLength() {
     const player = await getPlayer({ shouldRedirect: false });
     if (!player) throw new Error("Must be logged in.");
 
-    const games = await prisma.game.findMany({
-        where: { playerId: player.id },
-        select: {
-            _count: {
-                select: {
-                    rounds: true,
-                },
-            },
-        },
-    });
+    const [{ avg }] = await prisma.$queryRaw<[{ avg: number }]>`
+        SELECT AVG(round_count)
+        FROM (
+            SELECT COUNT(*) AS round_count
+            FROM "Round"
+            INNER JOIN "Game" ON "Round"."gameId" = "Game"."id"
+            WHERE "Game"."playerId" = ${player.id}
+            GROUP BY "Round"."gameId"
+        )
+    `;
 
-    const totalRounds = games.reduce((sum, game) => {
-        return sum + game._count.rounds;
-    }, 0);
-
-    return totalRounds / games.length;
+    return avg;
 }
