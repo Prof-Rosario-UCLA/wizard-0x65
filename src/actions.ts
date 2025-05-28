@@ -43,7 +43,7 @@ export async function getRandomDeckId(
 
 export async function createGame() {
     const player = await getPlayer({ shouldRedirect: false });
-    if (!player) throw new Error("Player not found");
+    if (!player) throw new Error("Not logged in.");
 
     return prisma.$transaction(async (tx) => {
         const randomDeckId = await getRandomDeckId(tx);
@@ -276,7 +276,7 @@ export async function getAverageGameLength() {
     const player = await getPlayer({ shouldRedirect: false });
     if (!player) throw new Error("Must be logged in.");
 
-    const [{ avg }] = await prisma.$queryRaw<[{ avg: number }]>`
+    const [{ avg }] = await prisma.$queryRaw<[{ avg: number | null }]>`
         SELECT AVG(round_count)
         FROM (
             SELECT COUNT(*) AS round_count
