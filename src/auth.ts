@@ -1,7 +1,8 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import { redirect } from "next/navigation";
-import { Player, PrismaClient } from "./app/generated/prisma";
+import { Player } from "./app/generated/prisma";
+import { prisma } from "./db";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     providers: [
@@ -29,7 +30,7 @@ export async function getPlayer<TShouldRedirect extends boolean = true>(
         }
         return null as any;
     }
-    const prisma = new PrismaClient();
+
     const player = prisma.player.upsert({
         where: { email },
         update: {},

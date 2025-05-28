@@ -24,11 +24,21 @@ function generateShop() {
     }));
 }
 
-export async function getRandomDeckId(prisma: Pick<PrismaClient, "$queryRaw">) {
-    const [{ deckId }] = await prisma.$queryRaw<
-        [{ deckId: number }]
+function generateDeck() {
+    return Array.from({ length: 4 }, (_, i) => ({
+        id: getRandomCard(),
+        position: i,
+    }));
+}
+
+export async function getRandomDeckId(
+    prisma: Pick<PrismaClient, "$queryRaw" | "deck">,
+) {
+    const [deckCard] = await prisma.$queryRaw<
+        [{ deckId: number } | undefined]
     >`SELECT "deckId" FROM "DeckCard" GROUP BY "deckId" HAVING count(*) = 4 ORDER BY RANDOM() LIMIT 1`;
-    return deckId;
+
+    if (deckCard) return deckCard.deckId;
 }
 
 export async function createGame() {
@@ -49,7 +59,15 @@ export async function createGame() {
                         health: 3,
                         status: RoundStatus.IN_PROGRESS,
                         playerDeck: { create: {} },
-                        enemyDeck: { connect: { id: randomDeckId } },
+                        enemyDeck: randomDeckId
+                            ? { connect: { id: randomDeckId } }
+                            : {
+                                  create: {
+                                      cards: {
+                                          create: generateDeck(),
+                                      },
+                                  },
+                              },
                         shopCards: { create: generateShop() },
                     },
                 },
