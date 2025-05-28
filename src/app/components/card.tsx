@@ -35,7 +35,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
                                 id="dmg"
                                 className="h-6 w-6 xl:h-8 xl:w-8 relative"
                             >
-                                <div className="z-5 absolute top-0 left-2 font-bold text-xl xl:text-2xl text-red-900">
+                                <div className="z-5 absolute top-0 left-2 font-bold text-xl xl:text-2xl text-fuchsia-600 text-outline-white">
                                     {damage}
                                 </div>
                                 <Image
@@ -50,7 +50,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
                                 className="h-6 w-6 xl:h-8 xl:w-8 relative"
                             >
                                 {/* todo: give white text outline */}
-                                <div className="z-5 absolute top-0 left-2 font-bold text-xl xl:text-2xl text-red-900">
+                                <div className="z-5 absolute top-0 left-2 font-bold text-xl xl:text-2xl text-pink-600 text-outline-white">
                                     {health}
                                 </div>
 
