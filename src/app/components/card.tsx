@@ -27,7 +27,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
                                 src={`/cards/${metadata.id}.png`}
                                 alt="card image"
                                 fill={true}
-                                className="object-cover"
+                                className="object-contain"
                             />
                         </div>
                         <div className="flex gap-8">
@@ -42,7 +42,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
                                     src={`/cards/ui_dmg.png`}
                                     alt="card image"
                                     fill={true}
-                                    className="object-cover rounded-md"
+                                    className="object-contain rounded-md"
                                 />
                             </div>
                             <div
@@ -58,7 +58,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
                                     src={`/cards/ui_health.png`}
                                     alt="card image"
                                     fill={true}
-                                    className="object-cover rounded-md z-0"
+                                    className="object-contain rounded-md z-0"
                                 />
                             </div>
                         </div>
