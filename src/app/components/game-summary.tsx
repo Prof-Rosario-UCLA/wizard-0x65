@@ -2,13 +2,16 @@ import { cards } from "~/simulation/cards";
 import { Deck } from "../types";
 import { Card } from "./card";
 import { Round, RoundStatus } from "../generated/prisma";
-import { Fragment } from "react";
+import { Dispatch, Fragment, SetStateAction } from "react";
+import { Stage } from "./game-controller";
+import { Button } from "./button";
 
 interface GameSummaryProps {
     deck: Deck;
     rounds: Round[];
+    setStage: Dispatch<SetStateAction<Stage>>;
 }
-export function GameSummary({ deck, rounds }: GameSummaryProps) {
+export function GameSummary({ deck, rounds, setStage }: GameSummaryProps) {
     return (
         <div className="flex flex-col gap-4 m-4">
             <h2 className="text-3xl">Game Over</h2>
@@ -51,6 +54,13 @@ export function GameSummary({ deck, rounds }: GameSummaryProps) {
                         ))}
                     </div>
                 </div>
+                <Button
+                    onClick={() => {
+                        setStage("shop");
+                    }}
+                >
+                    Restart
+                </Button>
             </div>
         </div>
     );
