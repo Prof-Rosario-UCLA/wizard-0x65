@@ -13,11 +13,13 @@ interface GameControllerProps {
     gameState: ClientGameState;
 }
 
+export type Stage = "shop" | "simulation" | "complete";
+
 export function GameController({
     gameState: defaultGameState,
 }: GameControllerProps) {
     const [gameState, setGameState] = useState(defaultGameState);
-    const [stage, setStage] = useState<"shop" | "simulation" | "complete">(
+    const [stage, setStage] = useState<Stage>(
         gameState.status === GameStatus.IN_PROGRESS ? "shop" : "complete",
     );
 
@@ -63,6 +65,7 @@ export function GameController({
         return (
             <Simulation
                 // TODO: replace deep copy with the real enemy cards
+                setStage={setStage}
                 enemyDeck={
                     gameState.deck.map((card) => ({
                         ...card,

@@ -26,7 +26,7 @@ export function DroppableCard({ id, card, position }: DroppableCardProps) {
             }`}
         >
             {card ? (
-                <Card card={card} />
+                <Card metadata={card} />
             ) : (
                 <>
                     <div className="h-32 w-32" />

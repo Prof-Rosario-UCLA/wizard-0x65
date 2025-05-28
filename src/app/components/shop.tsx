@@ -53,7 +53,7 @@ export function Shop({
                             <DraggableCard
                                 key={i}
                                 id={`shop:item:${i}`}
-                                card={card}
+                                metadata={card}
                             />
                         ))}
                     </div>

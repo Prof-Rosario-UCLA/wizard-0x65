@@ -3,10 +3,17 @@ import { forwardRef } from "react";
 import { CardMetadata } from "~/simulation/simulation";
 
 export interface CardProps {
-    card: CardMetadata;
+    metadata: CardMetadata;
+    damage?: number;
+    health?: number;
 }
 
-const Card = forwardRef<HTMLDivElement, CardProps>(({ card }, ref) => {
+const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
+    const {
+        metadata,
+        health = metadata.baseHealth,
+        damage = metadata.baseDamage,
+    } = props;
     return (
         <>
             <div ref={ref} className="">
@@ -17,7 +24,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ card }, ref) => {
                             className="h-18 w-18 xl:h-24 xl:w-24 relative"
                         >
                             <Image
-                                src={`/cards/${card.id}.png`}
+                                src={`/cards/${metadata.id}.png`}
                                 alt="card image"
                                 fill={true}
                                 className="object-cover"
@@ -29,7 +36,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ card }, ref) => {
                                 className="h-6 w-6 xl:h-8 xl:w-8 relative"
                             >
                                 <div className="z-5 absolute top-0 left-2 font-bold text-xl xl:text-2xl text-red-900">
-                                    {card.baseDamage}
+                                    {damage}
                                 </div>
                                 <Image
                                     src={`/cards/ui_dmg.png`}
@@ -44,7 +51,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ card }, ref) => {
                             >
                                 {/* todo: give white text outline */}
                                 <div className="z-5 absolute top-0 left-2 font-bold text-xl xl:text-2xl text-red-900">
-                                    {card.baseHealth}
+                                    {health}
                                 </div>
 
                                 <Image

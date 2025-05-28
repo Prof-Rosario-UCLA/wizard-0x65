@@ -4,12 +4,13 @@ import { Card, CardProps } from "./card";
 interface DraggableCardProps extends CardProps {
     id: UniqueIdentifier;
 }
+
 export function DraggableCard(props: DraggableCardProps) {
     const { attributes, listeners, setNodeRef, transform, isDragging } =
         useDraggable({
             id: props.id,
             data: {
-                cardId: props.card.id,
+                cardId: props.metadata.id,
             },
         });
 

@@ -12,15 +12,17 @@ export function GameSummary({ deck, rounds }: GameSummaryProps) {
     return (
         <div className="flex flex-col gap-4 m-4">
             <h2 className="text-3xl">Game Over</h2>
-            <div>
+            {/* <div>
                 <h2 className="text-2xl">Final Deck</h2>
                 <div className="inline-grid grid-cols-4 gap-2">
                     {deck.map((card, i) => {
                         if (!card) return null;
-                        return <Card key={i} card={cards[card.id].metadata} />;
+                        return (
+                            <Card key={i} metadata={cards[card.id].metadata} />
+                        );
                     })}
                 </div>
-            </div>
+            </div> */}
             <div className="flex flex-col gap-2">
                 <h3 className="text-2xl">Rounds</h3>
                 <div>
