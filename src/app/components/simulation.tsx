@@ -1,13 +1,3 @@
-// function Simulation() {
-//     return (
-//         <>
-//             <div className="flex">
-//                 <div className="border rounded-md px-4 py-2"></div>
-//             </div>
-//         </>
-//     );
-// }
-
 import { JavaCard } from "~/simulation/cards";
 import { Card } from "./card";
 import { Heading } from "./heading";
@@ -17,15 +7,23 @@ import { Heading } from "./heading";
 function SimulationPlayer({ isPlayer }) {
     return (
         <>
-            <div className="bg-gray-500 flex w-full h-full justify-between relative">
-                <div className="absolute top-5 left-5">
+            <div
+                className={`flex p-8 flex-col justify-between relative items-center justify-center ${
+                    isPlayer ? "bg-gray-200" : ""
+                }`}
+            >
+                <div className="relative xl:absolute top-0 left-0 py-8">
                     <Heading>{isPlayer ? "Player" : "Enemy"}</Heading>
                 </div>
                 <div
                     id="player"
-                    className="min-w-[45rem] bg-gray-200 h-full overflow-hidden flex justify-center items-center shrink"
+                    className="h-full flex justify-center items-center shrink"
                 >
-                    <div className="flex gap-4">
+                    <div
+                        className={`flex ${
+                            isPlayer ? "flex-col-reverse" : "flex-col"
+                        } xl:flex-row gap-4`}
+                    >
                         {(isPlayer
                             ? [...Array.from({ length: 4 })].reverse()
                             : Array.from({ length: 4 })
@@ -56,7 +54,7 @@ export function Simulation(props: SimulationProps) {
 
     return (
         <>
-            <div className="flex flex-col xl:flex-row justify-center h-full">
+            <div className="grid grid-cols-2 xl:h-screen h-full">
                 <SimulationPlayer isPlayer={true} />
                 <SimulationPlayer isPlayer={false} />
             </div>
