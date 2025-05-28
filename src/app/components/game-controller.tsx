@@ -7,6 +7,7 @@ import { addCardToDeck, beginRound, ClientGameState } from "~/actions";
 import { useEffect, useState } from "react";
 import { GameSummary } from "./game-summary";
 import { GameStatus } from "../generated/prisma";
+import { CardMetadata } from "~/simulation/simulation";
 
 interface GameControllerProps {
     gameState: ClientGameState;
@@ -58,7 +59,18 @@ export function GameController({
         );
     }
 
-    if (stage === "simulation") return <Simulation />;
+    if (stage === "simulation")
+        return (
+            <Simulation
+                // TODO: replace deep copy with the real enemy cards
+                enemyDeck={
+                    gameState.deck.map((card) => ({
+                        ...card,
+                    })) as CardMetadata[]
+                }
+                playerDeck={gameState.deck as (CardMetadata | null)[]}
+            />
+        );
 
     if (stage === "complete")
         return <GameSummary deck={gameState.deck} rounds={gameState.rounds} />;
