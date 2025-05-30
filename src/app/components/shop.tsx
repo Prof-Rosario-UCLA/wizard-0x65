@@ -7,6 +7,7 @@ import { DraggableCard } from "./draggable-card";
 import { useId } from "react";
 import { Button } from "./button";
 import { LoadingButton } from "./loading-button";
+import { Tooltip } from "./tooltip";
 
 interface ShopProps {
     cards: CardMetadata[];
