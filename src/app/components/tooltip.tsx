@@ -27,13 +27,13 @@ function Tooltip({
                     <div>{description}</div>
                     <hr className="opacity-60"></hr>
                     <div className="flex justify-between w-full gap-1">
-                        <div className="flex flex-col justify-center items-center bg-gray-600/40 rounded-lg p-2 min-w-[3rem]">
+                        <div className="flex flex-col justify-center items-center bg-fuchsia-600/40 rounded-lg p-2 min-w-[3rem]">
                             <div className="font-bold" title="Runtime">
                                 RT
                             </div>
                             {health}
                         </div>
-                        <div className="flex flex-col justify-center items-center bg-gray-600/40 rounded-lg p-2 min-w-[3rem]">
+                        <div className="flex flex-col justify-center items-center bg-pink-600/40 rounded-lg p-2 min-w-[3rem]">
                             <div className="font-bold" title="Clockspeed">
                                 CS
                             </div>
