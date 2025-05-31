@@ -16,7 +16,7 @@ function Tooltip({
     return (
         <article className="relative group inline-block cursor-pointer text-left">
             {children}
-            <div className="absolute left-full top-0 mb-2 hidden border border-white group-hover:flex bg-black text-white text-xs px-2 py-1 rounded shadow z-50 w-[9rem]">
+            <div className="absolute left-full ml-2 -top-2 mb-2 hidden border border-white group-hover:flex bg-black text-white text-xs px-2 py-1 rounded shadow z-50 w-[9rem]">
                 <section className="flex flex-col w-full p-2 gap-4">
                     <div className="font-bold text-base">{name}</div>
                     <div className="bg-gray-600/40 px-2 py-1 rounded-lg w-fit flex gap-2 items-center">

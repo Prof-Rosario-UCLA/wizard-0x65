@@ -26,7 +26,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
             >
                 <article
                     ref={ref}
-                    className=""
+                    className="transition-all duration-200 ease-in-out group-hover:-translate-y-2 group-hover:shadow-xl/30"
                     aria-label={`Card: ${metadata.name}`}
                 >
                     <div className="flex">
