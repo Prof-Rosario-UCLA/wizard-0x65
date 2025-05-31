@@ -3,6 +3,7 @@
 import { UniqueIdentifier, useDroppable } from "@dnd-kit/core";
 import { CardMetadata } from "~/simulation/simulation";
 import { Card } from "./card";
+import { JavaCard } from "~/simulation/cards";
 
 interface DroppableCardProps {
     id: UniqueIdentifier;
@@ -29,10 +30,8 @@ export function DroppableCard({ id, card, position }: DroppableCardProps) {
                 <Card metadata={card} />
             ) : (
                 <>
-                    <div className="h-32 w-32" />
-                    <div className="flex gap-8">
-                        <div className="h-12 w-12" />
-                        <div className="h-12 w-12" />
+                    <div className="invisible">
+                        <Card metadata={JavaCard.metadata} />
                     </div>
                 </>
             )}
