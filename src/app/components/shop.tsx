@@ -44,12 +44,12 @@ export function Shop({
                 }
             }}
         >
-            <div className="flex flex-col">
+            <div className="flex flex-col justify-center items-center">
                 <h1 className="relative mx-auto text-3xl text-white bg-neutral-600 inline-block py-1 px-16 top-7">
                     Shop
                 </h1>
-                <div className="flex bg-neutral-200 p-5 justify-between">
-                    <div className="m-10 grid grid-cols-2 md:grid-cols-4 gap-1 flex-grow">
+                <div className="flex flex-col sm:flex-row gap-4 bg-neutral-200 p-5 justify-between">
+                    <div className="mx-auto my-10 grid grid-cols-2 md:grid-cols-4 gap-1 flex-grow">
                         {cards.map((card, i) => (
                             <DraggableCard
                                 key={i}
@@ -63,7 +63,7 @@ export function Shop({
                             Deck
                         </h2>
 
-                        <div className="grid xl:grid-cols-2 grid-cols-1 gap-2 w-fit">
+                        <div className="grid xl:grid-cols-2 grid-cols-1 gap-2 w-fit mx-auto">
                             {deck.map((card, i) => (
                                 <DroppableCard
                                     key={i}
@@ -84,14 +84,14 @@ export function Shop({
                         </div>
                     </div>
                 </div>
+                <LoadingButton
+                    className="mt-2 w-fit"
+                    onClick={beginRound}
+                    disabled={deck.some((card) => !card)}
+                >
+                    Begin Round
+                </LoadingButton>
             </div>
-            <LoadingButton
-                className="mt-2"
-                onClick={beginRound}
-                disabled={deck.some((card) => !card)}
-            >
-                Begin Round
-            </LoadingButton>
         </DndContext>
     );
 }
