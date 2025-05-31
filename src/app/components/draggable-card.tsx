@@ -21,13 +21,13 @@ export function DraggableCard(props: DraggableCardProps) {
         : undefined;
 
     return (
-        <div
+        <figure
             className={isDragging ? "z-6" : ""}
             style={style}
             {...listeners}
             {...attributes}
         >
             <Card ref={setNodeRef} {...props} />
-        </div>
+        </figure>
     );
 }

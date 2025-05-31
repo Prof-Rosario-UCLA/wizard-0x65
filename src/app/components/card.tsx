@@ -24,10 +24,14 @@ const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
                 damage={metadata.baseDamage}
                 price={metadata.price}
             >
-                <div ref={ref} className="">
+                <article
+                    ref={ref}
+                    className=""
+                    aria-label={`Card: ${metadata.name}`}
+                >
                     <div className="flex">
                         <div className="flex-col border rounded-md p-4 bg-white">
-                            <div
+                            <figure
                                 id="banner"
                                 className="h-18 w-18 xl:h-24 xl:w-24 relative"
                             >
@@ -37,8 +41,8 @@ const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
                                     fill={true}
                                     className="object-contain"
                                 />
-                            </div>
-                            <div className="flex gap-8">
+                            </figure>
+                            <section className="flex gap-8">
                                 <div
                                     id="dmg"
                                     className="h-6 w-6 xl:h-8 xl:w-8 relative"
@@ -69,10 +73,10 @@ const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
                                         className="object-contain rounded-md z-0"
                                     />
                                 </div>
-                            </div>
+                            </section>
                         </div>
                     </div>
-                </div>
+                </article>
             </Tooltip>
         </>
     );

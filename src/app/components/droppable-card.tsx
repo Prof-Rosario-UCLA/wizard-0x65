@@ -20,7 +20,7 @@ export function DroppableCard({ id, card, position }: DroppableCardProps) {
     });
 
     return (
-        <div
+        <figure
             ref={setNodeRef}
             className={`border-5 ${
                 isOver ? "border-green-500" : "border-neutral-500"
@@ -35,6 +35,6 @@ export function DroppableCard({ id, card, position }: DroppableCardProps) {
                     </div>
                 </>
             )}
-        </div>
+        </figure>
     );
 }

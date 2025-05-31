@@ -17,7 +17,7 @@ interface SimPlayerProps {
 function SimulationPlayer({ isPlayer, deck }: SimPlayerProps) {
     return (
         <>
-            <div
+            <section
                 className={`flex p-8 flex-col justify-between relative items-center justify-center ${
                     isPlayer ? "bg-gray-200" : ""
                 }`}
@@ -51,7 +51,7 @@ function SimulationPlayer({ isPlayer, deck }: SimPlayerProps) {
                         )}
                     </div>
                 </div>
-            </div>
+            </section>
         </>
     );
 }
