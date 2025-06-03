@@ -18,8 +18,8 @@ function SimulationPlayer({ isPlayer, deck }: SimPlayerProps) {
     return (
         <>
             <section
-                className={`flex p-8 flex-col justify-between relative items-center justify-center ${
-                    isPlayer ? "bg-gray-200" : ""
+                className={`flex h-full p-8 flex-col justify-between relative items-center justify-center ${
+                    isPlayer ? "bg-primary/10" : ""
                 }`}
             >
                 <div className="relative xl:absolute top-0 left-0 py-8">
@@ -43,8 +43,10 @@ function SimulationPlayer({ isPlayer, deck }: SimPlayerProps) {
                                         key={i}
                                     >
                                         {cardProps && <Card {...cardProps} />}
-                                        <div className="h-[2px] mt-4 mb-2 w-full bg-black"></div>
-                                        <div>{index}</div>
+                                        <div className="h-[4px] rounded-full mt-4 mb-2 w-full bg-primary"></div>
+                                        <div className="text-primary">
+                                            {index}
+                                        </div>
                                     </div>
                                 );
                             },
@@ -62,7 +64,7 @@ interface SimProps {
     setStage: Dispatch<SetStateAction<Stage>>;
 }
 
-const SIMULATE_INTERVAL = 200;
+const SIMULATE_INTERVAL = 500;
 
 export function Simulation({ enemyDeck, playerDeck, setStage }: SimProps) {
     const gameRef = React.useRef<Game>(null);
@@ -125,9 +127,11 @@ export function Simulation({ enemyDeck, playerDeck, setStage }: SimProps) {
 
     return (
         <>
-            <div className="grid grid-cols-2 xl:h-screen h-full">
-                <SimulationPlayer isPlayer={true} deck={playerCardData} />
-                <SimulationPlayer isPlayer={false} deck={enemyCardData} />
+            <div className="h-screen w-screen flex items-center justify-center">
+                <div className="h-[96vh] w-[96vw] bg-primary-lightest grid grid-cols-2 overflow-y-scroll">
+                    <SimulationPlayer isPlayer={true} deck={playerCardData} />
+                    <SimulationPlayer isPlayer={false} deck={enemyCardData} />
+                </div>
             </div>
         </>
     );
