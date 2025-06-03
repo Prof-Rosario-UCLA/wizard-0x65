@@ -9,6 +9,7 @@ import { Button } from "./button";
 import { LoadingButton } from "./loading-button";
 import { Tooltip } from "./tooltip";
 import { Heading, SecHeading } from "./heading";
+import { buyCard } from "~/actions";
 
 interface ShopProps {
     cards: CardMetadata[];
@@ -73,8 +74,18 @@ export function Shop({
                             </figure>
 
                             <section className="flex flex-row bg-primary text-white divide-x divide-white/60 p-2">
-                                <p className="flex-1 p-2">{bytes} Bytes</p>
-                                <p className="flex-1 p-2">{health} Lives</p>
+                                <div className="flex-1 p-2">
+                                    <div className="flex gap-2 items-center justify-center">
+                                        <div className="h-2 w-2 rounded-full bg-bytes"></div>
+                                        {bytes} Bytes
+                                    </div>
+                                </div>
+                                <div className="flex-1 p-2">
+                                    <div className="flex gap-2 items-center justify-center">
+                                        <div className="h-2 w-2 rounded-full bg-lives"></div>
+                                        {health} Lives
+                                    </div>
+                                </div>
                             </section>
                         </div>
                     </div>

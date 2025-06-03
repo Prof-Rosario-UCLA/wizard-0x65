@@ -3,7 +3,7 @@
 import { Shop } from "./shop";
 import { cards } from "~/simulation/cards";
 import { Simulation } from "./simulation";
-import { addCardToDeck, beginRound, ClientGameState } from "~/actions";
+import { addCardToDeck, beginRound, buyCard, ClientGameState } from "~/actions";
 import { useEffect, useState } from "react";
 import { GameSummary } from "./game-summary";
 import { GameStatus } from "../generated/prisma";
@@ -39,19 +39,27 @@ export function GameController({
                 bytes={gameState.bytes}
                 health={gameState.health}
                 takeCard={async (cardId, position) => {
-                    await addCardToDeck({
-                        gameId: gameState.id,
-                        cardId,
-                        position,
-                    });
-                    setGameState((gameState) => {
-                        const newDeck = [...gameState.deck];
-                        newDeck[position] = { id: cardId };
-                        return {
-                            ...gameState,
-                            deck: newDeck,
-                        };
-                    });
+                    const res = await buyCard(
+                        gameState.id,
+                        cards[cardId].metadata.price,
+                    );
+                    if (res.success) {
+                        await addCardToDeck({
+                            gameId: gameState.id,
+                            cardId,
+                            position,
+                        });
+
+                        setGameState((gameState) => {
+                            const newDeck = [...gameState.deck];
+                            newDeck[position] = { id: cardId };
+                            return {
+                                ...gameState,
+                                deck: newDeck,
+                                bytes: res.bytes ?? gameState.bytes,
+                            };
+                        });
+                    }
                 }}
                 beginRound={async () => {
                     await beginRound(gameState.id);
