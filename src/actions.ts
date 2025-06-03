@@ -206,6 +206,46 @@ export async function buyCard(gameId: number, cardCost: number) {
     return { success: true, bytes: newBytes };
 }
 
+export async function sellCard(gameId: number, refundAmount: number) {
+    const player = await getPlayer({ shouldRedirect: false });
+    if (!player) return { success: false, error: "Player not found" };
+
+    const game = await prisma.game.findUnique({
+        where: {
+            playerId: player.id,
+            id: gameId,
+        },
+        include: {
+            rounds: {
+                orderBy: { number: "asc" },
+                include: {
+                    playerDeck: {
+                        include: {
+                            cards: {
+                                orderBy: { position: "asc" },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    });
+
+    if (!game || game.rounds.length === 0) {
+        return { success: false, error: "Game or round not found" };
+    }
+
+    const latestRound = game.rounds[game.rounds.length - 1];
+
+    const newBytes = latestRound.bytes + refundAmount;
+    await prisma.round.update({
+        where: { id: latestRound.id },
+        data: { bytes: newBytes },
+    });
+
+    return { success: true, bytes: newBytes };
+}
+
 export type ClientGameState = NonNullable<
     Awaited<ReturnType<typeof getGameState>>
 >;

@@ -9,9 +9,15 @@ interface DroppableCardProps {
     id: UniqueIdentifier;
     position: number;
     card?: CardMetadata;
+    onDoubleClick?: () => void;
 }
 
-export function DroppableCard({ id, card, position }: DroppableCardProps) {
+export function DroppableCard({
+    id,
+    card,
+    position,
+    onDoubleClick,
+}: DroppableCardProps) {
     const { isOver, setNodeRef } = useDroppable({
         id,
         data: {
@@ -25,6 +31,7 @@ export function DroppableCard({ id, card, position }: DroppableCardProps) {
             className={`rounded w-fit mx-auto ${
                 isOver ? "bg-runtime/60" : "bg-primary/40"
             }`}
+            onDoubleClick={onDoubleClick}
         >
             {card ? (
                 <Card metadata={card} />

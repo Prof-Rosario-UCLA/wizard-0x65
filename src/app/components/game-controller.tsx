@@ -3,7 +3,13 @@
 import { Shop } from "./shop";
 import { cards } from "~/simulation/cards";
 import { Simulation } from "./simulation";
-import { addCardToDeck, beginRound, buyCard, ClientGameState } from "~/actions";
+import {
+    addCardToDeck,
+    beginRound,
+    buyCard,
+    ClientGameState,
+    sellCard,
+} from "~/actions";
 import { useEffect, useState } from "react";
 import { GameSummary } from "./game-summary";
 import { GameStatus } from "../generated/prisma";
@@ -53,6 +59,27 @@ export function GameController({
                         setGameState((gameState) => {
                             const newDeck = [...gameState.deck];
                             newDeck[position] = { id: cardId };
+                            return {
+                                ...gameState,
+                                deck: newDeck,
+                                bytes: res.bytes ?? gameState.bytes,
+                            };
+                        });
+                    }
+                }}
+                sellCard={async (position) => {
+                    const card = gameState.deck[position];
+                    if (!card) return;
+
+                    const refundAmount = cards[card.id].metadata.price;
+
+                    const res = await sellCard(gameState.id, refundAmount);
+
+                    if (res.success) {
+                        setGameState((gameState) => {
+                            const newDeck = [...gameState.deck];
+                            newDeck[position] = null;
+
                             return {
                                 ...gameState,
                                 deck: newDeck,

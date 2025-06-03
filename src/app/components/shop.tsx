@@ -17,6 +17,7 @@ interface ShopProps {
     bytes: number;
     health: number;
     takeCard(cardId: string, position: number): void;
+    sellCard(position: number): void;
     beginRound(): void;
 }
 
@@ -27,6 +28,7 @@ export function Shop({
     health,
     takeCard,
     beginRound,
+    sellCard,
 }: ShopProps) {
     const dndId = useId();
     return (
@@ -79,6 +81,11 @@ export function Shop({
                                         id={`shop:deck:${i}`}
                                         position={i}
                                         card={card ?? undefined}
+                                        onDoubleClick={() => {
+                                            if (card) {
+                                                sellCard(i);
+                                            }
+                                        }}
                                     />
                                 ))}
                             </figure>
