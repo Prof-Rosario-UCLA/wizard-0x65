@@ -55,6 +55,16 @@ export function Shop({
                                 key={i}
                                 id={`shop:item:${i}`}
                                 metadata={card}
+                                onDoubleClick={() => {
+                                    const emptySlot = deck.findIndex(
+                                        (slot) => slot === null,
+                                    );
+                                    if (emptySlot !== -1) {
+                                        takeCard(card.id, emptySlot);
+                                    } else {
+                                        alert("No empty slots in your deck.");
+                                    }
+                                }}
                             />
                         ))}
                     </figure>

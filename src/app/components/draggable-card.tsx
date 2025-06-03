@@ -3,6 +3,7 @@ import { Card, CardProps } from "./card";
 
 interface DraggableCardProps extends CardProps {
     id: UniqueIdentifier;
+    onDoubleClick?: () => void;
 }
 
 export function DraggableCard(props: DraggableCardProps) {
@@ -24,6 +25,7 @@ export function DraggableCard(props: DraggableCardProps) {
         <figure
             className={isDragging ? "z-20" : ""}
             style={style}
+            onDoubleClick={props.onDoubleClick}
             {...listeners}
             {...attributes}
         >
