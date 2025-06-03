@@ -4,6 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
     title: "Wizard 0x65",
     description: "A software-themed autobattler!",
+    manifest: "/manifest.json",
 };
 
 export default function RootLayout({
@@ -26,7 +27,9 @@ export default function RootLayout({
                 sizes="180x180"
                 href="/apple-touch-icon.png"
             />
-            <link rel="manifest" href="/site.webmanifest" />
+
+            <link rel="manifest" href="/manifest.json" />
+            <meta name="theme-color" content="#000000" />
 
             <body>{children}</body>
         </html>
