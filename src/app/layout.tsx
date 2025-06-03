@@ -31,7 +31,7 @@ export default function RootLayout({
             <link rel="manifest" href="/manifest.json" />
             <meta name="theme-color" content="#000000" />
 
-            <body>{children}</body>
+            <body className="font-display">{children}</body>
         </html>
     );
 }

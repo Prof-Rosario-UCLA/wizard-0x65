@@ -8,6 +8,7 @@ import { useId } from "react";
 import { Button } from "./button";
 import { LoadingButton } from "./loading-button";
 import { Tooltip } from "./tooltip";
+import { Heading, SecHeading } from "./heading";
 
 interface ShopProps {
     cards: CardMetadata[];
@@ -44,12 +45,10 @@ export function Shop({
                 }
             }}
         >
-            <article className="flex flex-col justify-center items-center">
-                <h1 className="relative mx-auto text-3xl text-white bg-neutral-600 inline-block py-1 px-16 top-7">
-                    Shop
-                </h1>
-                <section className="flex flex-col sm:flex-row gap-4 bg-neutral-200 p-5 justify-between">
-                    <figure className="mx-auto my-10 grid grid-cols-2 md:grid-cols-4 gap-1 flex-grow">
+            <article className="flex flex-col justify-center items-center h-screen w-screen p-4">
+                <Heading>Shop</Heading>
+                <section className="flex flex-col w-full h-full overflow-x-hidden overflow-y-scroll sm:flex-row gap-4 bg-primary-lightest p-5 justify-between">
+                    <figure className="grid grid-cols-2 md:grid-cols-4 gap-1 grow">
                         {cards.map((card, i) => (
                             <DraggableCard
                                 key={i}
@@ -58,30 +57,26 @@ export function Shop({
                             />
                         ))}
                     </figure>
-                    <div className="flex flex-col gap-2 bg-neutral-400 p-4 text-center">
-                        <h2 className="text-3xl text-white bg-neutral-600 py-1">
-                            Deck
-                        </h2>
+                    <div className="flex flex-col text-center">
+                        <SecHeading>Deck</SecHeading>
 
-                        <figure className="grid xl:grid-cols-2 grid-cols-1 gap-2 w-fit mx-auto">
-                            {deck.map((card, i) => (
-                                <DroppableCard
-                                    key={i}
-                                    id={`shop:deck:${i}`}
-                                    position={i}
-                                    card={card ?? undefined}
-                                />
-                            ))}
-                        </figure>
+                        <div className="bg-primary-light">
+                            <figure className="grid lg:grid-cols-2 grid-cols-1 gap-2 w-fit p-4">
+                                {deck.map((card, i) => (
+                                    <DroppableCard
+                                        key={i}
+                                        id={`shop:deck:${i}`}
+                                        position={i}
+                                        card={card ?? undefined}
+                                    />
+                                ))}
+                            </figure>
 
-                        <section className="flex flex-col xl:flex-row gap-2 mt-4 text-white">
-                            <p className="bg-neutral-500 flex-1 p-4">
-                                {bytes} Bytes
-                            </p>
-                            <p className="bg-neutral-500 flex-1 p-4">
-                                {health} Lives
-                            </p>
-                        </section>
+                            <section className="flex flex-row bg-primary text-white divide-x divide-white/60 p-2">
+                                <p className="flex-1 p-2">{bytes} Bytes</p>
+                                <p className="flex-1 p-2">{health} Lives</p>
+                            </section>
+                        </div>
                     </div>
                 </section>
                 <LoadingButton

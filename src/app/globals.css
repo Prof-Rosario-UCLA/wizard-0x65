@@ -3,17 +3,29 @@
 
 @theme {
     /* https://pigment.shapefactory.co/?a=76CDA5&b=FF3786 */
-    --color-primary-light: #8cdfba;
-    --color-primary: #76cda5;
+    --color-primary: #666feb;
+    --color-primary-light: #cfd2fb;
+    --color-primary-lightest: #e3e4f7;
+    --color-secondary: #b704fe;
+
+    --color-bytes: #ffcc00;
+    --color-runtime: #00ff26;
+    --color-clockspeed: #ff00d4;
+    --color-lives: #ff0004;
+
+    /* --color-primary-light: rgb(206, 226, 216); */
+    /* --color-primary: #76cda5; */
     --color-primary-dark: #56b285;
-    --color-primary-darker: #389465;
+    --color-primary-darker: rgb(56, 117, 85);
+    --color-primary-darkest: #024d3b;
 
     --color-on-primary: #fff;
 
-    --color-secondary-light: #ff64a6;
-    --color-secondary: #ff3786;
-    --color-secondary-dakr: #ea055a;
+    --color-secondary-light: rgb(250, 221, 234);
+    /* --color-secondary: #ff3786; */
+    --color-secondary-dark: #ea055a;
     --color-secondary-darker: #cc0047;
+    --color-secondary-darkest: rgb(53, 17, 30);
 
     --color-on-secondary: #fff;
 
@@ -23,4 +35,16 @@
 .text-outline-white {
     text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff,
         1px 1px 0 #fff;
+}
+
+html {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* 🚫 Prevent scrollbars */
+}
+
+* {
+    box-sizing: border-box;
 }

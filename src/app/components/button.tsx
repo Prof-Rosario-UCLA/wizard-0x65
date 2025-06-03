@@ -12,7 +12,7 @@ function Button<As extends React.ElementType = "button">({
     const AsComponent = as ?? "button";
     return (
         <AsComponent
-            className={`border rounded-md px-4 py-2 not-disabled:cursor-pointer disabled:opacity-60 ${className}`}
+            className={`bg-primary disabled:text-white/60 rounded-md px-4 py-2 not-disabled:cursor-pointer disabled:opacity-60 ${className}`}
             {...props}
         />
     );
