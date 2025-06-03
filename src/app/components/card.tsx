@@ -42,12 +42,12 @@ const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
             >
                 <article
                     ref={ref}
-                    className="transition-all duration-200 ease-in-out group-hover:-translate-y-2 group-hover:shadow-xl/30 text-white"
+                    className="text-xs sm:text-sm transition-all duration-200 ease-in-out group-hover:-translate-y-2 group-hover:shadow-xl/30 text-white"
                     aria-label={`Card: ${metadata.name}`}
                 >
                     <div className="flex">
                         <div className="flex-col border-4 rounded border-primary bg-white relative">
-                            <div className="absolute top-1 left-1 z-20">
+                            <div className="absolute top-1 left-1 z-10">
                                 <InfoBox
                                     value={metadata.price}
                                     iconBg="bg-bytes"
@@ -68,7 +68,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
                                 <section className="bg-primary text-center w-full py-1 font-bold">
                                     {metadata.name}
                                 </section>
-                                <section className="text-center w-full py-1 flex justify-between">
+                                <section className="text-center w-full py-1 flex gap-1 justify-between">
                                     <InfoBox
                                         value={metadata.baseHealth}
                                         iconBg="bg-runtime"

@@ -22,7 +22,7 @@ export function DraggableCard(props: DraggableCardProps) {
 
     return (
         <figure
-            className={isDragging ? "z-6" : ""}
+            className={isDragging ? "z-20" : ""}
             style={style}
             {...listeners}
             {...attributes}

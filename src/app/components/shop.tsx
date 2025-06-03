@@ -47,8 +47,8 @@ export function Shop({
         >
             <article className="flex flex-col justify-center items-center h-screen w-screen p-4">
                 <Heading>Shop</Heading>
-                <section className="flex flex-col w-full h-full overflow-x-hidden overflow-y-scroll sm:flex-row gap-4 bg-primary-lightest p-5 justify-between">
-                    <figure className="grid grid-cols-2 md:grid-cols-4 gap-1 grow">
+                <section className="flex flex-col sm:flex-row w-full h-full overflow-x-hidden overflow-y-scroll gap-4 bg-primary-lightest p-5 justify-between">
+                    <figure className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {cards.map((card, i) => (
                             <DraggableCard
                                 key={i}
@@ -57,11 +57,11 @@ export function Shop({
                             />
                         ))}
                     </figure>
-                    <div className="flex flex-col text-center">
+                    <div className="flex flex-col text-center items-center">
                         <SecHeading>Deck</SecHeading>
 
-                        <div className="bg-primary-light">
-                            <figure className="grid lg:grid-cols-2 grid-cols-1 gap-2 w-fit p-4">
+                        <div className="bg-primary-light w-full">
+                            <figure className="grid lg:grid-cols-2 grid-cols-1 gap-2 p-4">
                                 {deck.map((card, i) => (
                                     <DroppableCard
                                         key={i}

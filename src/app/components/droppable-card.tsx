@@ -22,7 +22,9 @@ export function DroppableCard({ id, card, position }: DroppableCardProps) {
     return (
         <figure
             ref={setNodeRef}
-            className={`rounded ${isOver ? "bg-runtime/60" : "bg-primary/40"}`}
+            className={`rounded w-fit mx-auto ${
+                isOver ? "bg-runtime/60" : "bg-primary/40"
+            }`}
         >
             {card ? (
                 <Card metadata={card} />
