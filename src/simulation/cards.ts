@@ -46,9 +46,13 @@ export class CCard extends CardBase {
             }
 
             if (this.depthRemaining > 0) {
-                const child = new CCard(null, 1, 1);
+                const child = new CCard(undefined, 1, 1);
                 child.depthRemaining = this.depthRemaining - 1;
-                this.game.spawn(child, this.team, this.game.indexOfCard(this));
+                this.game?.spawn(
+                    child,
+                    this.team,
+                    this.game?.indexOfCard(this),
+                );
             }
         }
     }
@@ -104,8 +108,9 @@ export class VimCard extends CardBase {
 
     onEvent(event: GameEvent): void {
         if (event instanceof RoundStartEvent) {
-            for (const card of this.game.getDeck(this.team)) {
-                this.game.enqueueAction(
+            if (!this.game) return;
+            for (const card of this.game?.getDeck(this.team)) {
+                this.game?.enqueueAction(
                     new ChangeHealthAction(this.game, card, 1),
                 );
             }
@@ -138,7 +143,7 @@ export class TempleOSCard extends CardBase {
     static get metadata(): CardMetadata {
         return {
             id: "os_temple",
-            name: "TemplsOS",
+            name: "TempleOS",
             description: `
                 Kills self on start.
                 `,
@@ -150,7 +155,7 @@ export class TempleOSCard extends CardBase {
 
     onEvent(event: GameEvent): void {
         if (event instanceof RoundStartEvent) {
-            this.game.enqueueAction(
+            this.game?.enqueueAction(
                 new KillCardAction(this.game, this),
             );
         }
@@ -173,9 +178,9 @@ export class ArchCard extends CardBase {
 
     onEvent(event: GameEvent): void {
         if (event instanceof RoundStartEvent) {
-            const cards = [...this.game.getCards()];
+            const cards = [...(this.game?.getCards() ?? [])];
             for (const card of cards) {
-                this.game.enqueueAction(new SwapHealthAction(this.game, card));
+                this.game?.enqueueAction(new SwapHealthAction(this.game, card));
             }
         }
     }
@@ -197,7 +202,7 @@ export class LlamaCard extends CardBase {
 
     onEvent(event: GameEvent): void {
         if (event instanceof RoundEndEvent) {
-            const cards = [...this.game.getDeck(this.team)];
+            const cards = [...(this.game?.getDeck(this.team) ?? [])];
             for (const card of cards) {
                 const newHealth = Math.pow(
                     2,
@@ -207,14 +212,14 @@ export class LlamaCard extends CardBase {
                     2,
                     Math.ceil(Math.log2(card.damage)),
                 );
-                this.game.enqueueAction(
+                this.game?.enqueueAction(
                     new ChangeHealthAction(
                         this.game,
                         card,
                         newHealth - card.health,
                     ),
                 );
-                this.game.enqueueAction(
+                this.game?.enqueueAction(
                     new ChangeDamageAction(
                         this.game,
                         card,
@@ -260,16 +265,18 @@ export class BombCard extends CardBase {
             if (event.card !== this) {
                 return;
             }
-
+            if (!this.game) {
+                return;
+            }
             const idx = this.game.indexOfCard(this);
             const deck = this.game.getDeck(this.team);
             if (idx - 1 >= 0) {
-                this.game.enqueueAction(
+                this.game?.enqueueAction(
                     new ChangeHealthAction(this.game, deck[idx - 1], -1),
                 );
             }
             if (idx + 1 < deck.length) {
-                this.game.enqueueAction(
+                this.game?.enqueueAction(
                     new ChangeHealthAction(this.game, deck[idx + 1], -1),
                 );
             }
@@ -293,13 +300,16 @@ export class JavaCard extends CardBase {
 
     onEvent(event: GameEvent): void {
         if (event instanceof RoundStartEvent) {
+            if (!this.game) {
+                return;
+            }
             for (let i = 0; i < 2; ++i) {
                 const team = i === 0 ? this.team : this.oppositeTeam;
-                const bombCount = 4 - this.game.getDeck(team).length;
+                const bombCount = 4 - this.game?.getDeck(team).length;
 
                 for (let bombNumber = 0; bombNumber < bombCount; ++bombNumber) {
-                    const bomb = new BombCard(null);
-                    this.game.enqueueAction(
+                    const bomb = new BombCard(undefined);
+                    this.game?.enqueueAction(
                         new SpawnCardAction(
                             this.game,
                             bomb,

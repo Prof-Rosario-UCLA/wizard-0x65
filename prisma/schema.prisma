@@ -15,54 +15,77 @@ datasource db {
 }
 
 model Player {
-  id         Int     @id @default(autoincrement())
-  googleId   String  @unique
-  email      String? @unique
-  username   String?
-  games      Game[]
+  id    Int    @id @default(autoincrement())
+  email String @unique
+  games Game[]
 }
 
 model Game {
-  id        Int     @id @default(autoincrement())
-  playerId  Int
-  active    Boolean
-  player    Player  @relation(fields: [playerId], references: [id])
-  gameStates GameState[]
-  decks      Deck[]
-  shops      Shop[]
+  id       Int        @id @default(autoincrement())
+  playerId Int
+  player   Player     @relation(fields: [playerId], references: [id])
+  status   GameStatus
+  rounds   Round[]
 }
 
-model GameState {
-  gameId       Int
-  roundNumber  Int
-  timestamp    DateTime @default(now())
-  deckId       Int
-  health       Int
-  bytes        Int
+enum GameStatus {
+  IN_PROGRESS
+  COMPLETED
+}
 
-  game         Game  @relation(fields: [gameId], references: [id])
+model Round {
+  id Int @id @default(autoincrement())
 
-  @@id([gameId, roundNumber])
+  number Int
+
+  gameId Int
+  game   Game @relation(fields: [gameId], references: [id])
+
+  playerDeckId Int
+  enemyDeckId  Int
+  playerDeck   Deck @relation("PlayerDeck", fields: [playerDeckId], references: [id])
+  enemyDeck    Deck @relation("EnemyDeck", fields: [enemyDeckId], references: [id])
+
+  shopCards ShopCard[]
+
+  health Int
+  bytes  Int
+
+  status RoundStatus
+
+  @@unique([gameId, number])
+}
+
+enum RoundStatus {
+  IN_PROGRESS
+  WIN
+  LOSE
+  DRAW
 }
 
 model Deck {
-  deckCardId   Int     @id @default(autoincrement())
-  gameId       Int
-  roundNumber  Int
-  cardIdx      Int
-  cardId       Int
-  health      Int
-  damage   Int
+  id Int @id @default(autoincrement())
 
-  game         Game @relation(fields: [gameId], references: [id])
+  cards        DeckCard[]
+  playerRounds Round[]    @relation("PlayerDeck")
+  enemyRounds  Round[]    @relation("EnemyDeck")
 }
 
-model Shop {
-  shopCardId   Int     @id @default(autoincrement())
-  gameId       Int
-  roundNumber  Int
-  shopCardIdx  Int
-  cardId       Int
+model DeckCard {
+  id       String
+  deckId   Int
+  position Int
 
-  game         Game @relation(fields: [gameId], references: [id])
+  deck Deck @relation(fields: [deckId], references: [id])
+
+  @@unique([deckId, position])
+}
+
+model ShopCard {
+  id       Int    @id @default(autoincrement())
+  cardId   String
+  position Int
+
+  roundId Int
+  round   Round @relation(fields: [roundId], references: [id])
 }
