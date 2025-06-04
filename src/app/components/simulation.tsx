@@ -64,7 +64,7 @@ interface SimProps {
     setStage: Dispatch<SetStateAction<Stage>>;
 }
 
-const SIMULATE_INTERVAL = 500;
+const SIMULATE_INTERVAL = 200;
 
 export function Simulation({ enemyDeck, playerDeck, setStage }: SimProps) {
     const gameRef = React.useRef<Game>(null);

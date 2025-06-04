@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import "./globals.css";
+import NetworkStatus from "./components/network-status";
 
 export const metadata: Metadata = {
     title: "Wizard 0x65",
@@ -31,7 +32,10 @@ export default function RootLayout({
             <link rel="manifest" href="/manifest.json" />
             <meta name="theme-color" content="#000000" />
 
-            <body className="font-display">{children}</body>
+            <body className="font-display">
+                <NetworkStatus />
+                {children}
+            </body>
         </html>
     );
 }
