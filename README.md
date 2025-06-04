@@ -23,6 +23,8 @@ DATABASE_URL=postgresql://postgres:password@localhost:5432/wizard
 REDIS_URL=redis://localhost:6379
 AUTH_GOOGLE_ID=...
 AUTH_GOOGLE_SECRET=...
+NEXTAUTH_URL=http://localhost:3000
+AUTH_TRUST_HOST=true
 ```
 
 The Google auth credentials can be found on GCP Console's [API and Services/Credentials](https://console.cloud.google.com/apis/credentials?referrer=search&inv=1&invt=AbyX2w&project=cs144-25s-ketexon).
@@ -74,3 +76,6 @@ kubectl port-forward service/web-app 3000:3000
 ```
 
 This will expose a port `localhost:3000` on your computer that corresponds to the pod running in the cluster.
+
+RACHEL'S NOTE:
+I had to run `export PORT=3000` to build and start.
