@@ -21,6 +21,16 @@ interface GameControllerProps {
 
 export type Stage = "shop" | "simulation" | "complete";
 
+type DeckCard = {
+    id: string;
+    position: number;
+    deckId: number;
+};
+type ShopCard = {
+    cardId: string;
+    position: number;
+};
+
 export function GameController({
     gameState: defaultGameState,
 }: GameControllerProps) {
@@ -37,9 +47,9 @@ export function GameController({
         return (
             <Shop
                 cards={gameState.shop.map(
-                    (card) => cards[card.cardId].metadata,
+                    (card: ShopCard) => cards[card.cardId].metadata,
                 )}
-                deck={gameState.deck.map((card) =>
+                deck={gameState.deck.map((card: DeckCard) =>
                     card ? cards[card.id].metadata : null,
                 )}
                 bytes={gameState.bytes}
@@ -56,7 +66,7 @@ export function GameController({
                             position,
                         });
 
-                        setGameState((gameState) => {
+                        setGameState((gameState: ClientGameState) => {
                             const newDeck = [...gameState.deck];
                             newDeck[position] = { id: cardId };
                             return {
@@ -65,7 +75,7 @@ export function GameController({
                                 bytes: res.bytes ?? gameState.bytes,
                             };
                         });
-                    }
+                    } else alert("Not enough bytes!");
                 }}
                 sellCard={async (position) => {
                     const card = gameState.deck[position];
@@ -80,7 +90,7 @@ export function GameController({
                     );
 
                     if (res.success) {
-                        setGameState((gameState) => {
+                        setGameState((gameState: ClientGameState) => {
                             const newDeck = [...gameState.deck];
                             newDeck[position] = null;
 
@@ -106,7 +116,7 @@ export function GameController({
                 // TODO: replace deep copy with the real enemy cards
                 setStage={setStage}
                 enemyDeck={
-                    gameState.deck.map((card) => ({
+                    gameState.deck.map((card: DeckCard) => ({
                         ...card,
                     })) as CardMetadata[]
                 }

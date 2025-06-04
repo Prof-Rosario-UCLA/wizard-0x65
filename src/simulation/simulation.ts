@@ -114,6 +114,9 @@ export class CardBase {
         const event = new HealthChangedEvent();
         event.card = this;
         event.delta = amount;
+        if (!this.game) {
+            return;
+        }
         this.game.broadcast(event);
 
         if (event.cancelled) {
@@ -185,7 +188,7 @@ export class GameEvent {
         return true;
     }
 
-    get type(): GameEventType {
+    get type(): GameEventType | null {
         return null;
     }
 }
@@ -205,8 +208,8 @@ export class RoundStartEvent extends GameEvent {
 }
 
 export class HealthChangedEvent extends GameEvent {
-    public card: CardBase;
-    public delta: number;
+    public card!: CardBase;
+    public delta!: number;
 
     get type(): GameEventType {
         return GameEventType.HealthChanged;
@@ -214,7 +217,7 @@ export class HealthChangedEvent extends GameEvent {
 }
 
 export class CardDiedEvent extends GameEvent {
-    public card: CardBase;
+    public card!: CardBase;
 
     get type(): GameEventType {
         return GameEventType.CardDied;
