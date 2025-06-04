@@ -54,13 +54,6 @@ export function GameSummary({ deck, rounds, setStage }: GameSummaryProps) {
                         ))}
                     </div>
                 </div>
-                <Button
-                    onClick={() => {
-                        setStage("shop");
-                    }}
-                >
-                    Restart
-                </Button>
             </div>
         </div>
     );

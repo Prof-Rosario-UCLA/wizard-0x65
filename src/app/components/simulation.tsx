@@ -1,13 +1,23 @@
 "use client";
 
-import { cards, JavaCard } from "~/simulation/cards";
+import { cards } from "~/simulation/cards";
 import { Card, CardProps } from "./card";
 import { Heading } from "./heading";
-import { CardMetadata, Game, GameState } from "~/simulation/simulation";
-import React, { Dispatch, SetStateAction } from "react";
+import {
+    CardMetadata,
+    Game,
+    GameState,
+    WinState,
+} from "~/simulation/simulation";
+import {
+    useEffect,
+    useRef,
+    useCallback,
+    useState,
+    Dispatch,
+    SetStateAction,
+} from "react";
 import { Stage } from "./game-controller";
-
-// export { Simulation };
 
 interface SimPlayerProps {
     isPlayer: boolean;
@@ -18,7 +28,7 @@ function SimulationPlayer({ isPlayer, deck }: SimPlayerProps) {
     return (
         <>
             <section
-                className={`flex h-full p-8 flex-col justify-between relative items-center justify-center ${
+                className={`flex h-full p-8 flex-col justify-between relative items-center ${
                     isPlayer ? "bg-primary/10" : ""
                 }`}
             >
@@ -59,19 +69,19 @@ function SimulationPlayer({ isPlayer, deck }: SimPlayerProps) {
 }
 
 interface SimProps {
-    enemyDeck: CardMetadata[];
+    enemyDeck: (CardMetadata | null)[];
     playerDeck: (CardMetadata | null)[];
-    setStage: Dispatch<SetStateAction<Stage>>;
+    onFinish: (winState: WinState) => void;
 }
 
 const SIMULATE_INTERVAL = 200;
 
-export function Simulation({ enemyDeck, playerDeck, setStage }: SimProps) {
-    const gameRef = React.useRef<Game>(null);
-    const [playerCardData, setPlayerCardData] = React.useState<CardProps[]>([]);
-    const [enemyCardData, setEnemyCardData] = React.useState<CardProps[]>([]);
+export function Simulation({ enemyDeck, playerDeck, onFinish }: SimProps) {
+    const gameRef = useRef<Game>(null);
+    const [playerCardData, setPlayerCardData] = useState<CardProps[]>([]);
+    const [enemyCardData, setEnemyCardData] = useState<CardProps[]>([]);
 
-    const updateCardData = React.useCallback(() => {
+    const updateCardData = useCallback(() => {
         setPlayerCardData(
             gameRef.current!.playerDeck.map((card) => ({
                 metadata: card.metadata,
@@ -88,17 +98,19 @@ export function Simulation({ enemyDeck, playerDeck, setStage }: SimProps) {
         );
     }, [gameRef.current, setPlayerCardData, setEnemyCardData]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const player = playerDeck
             .filter((x) => x !== null)
             .map(({ id }) => {
                 const CardClass = cards[id];
                 return new CardClass();
             });
-        const enemy = enemyDeck.map(({ id }) => {
-            const CardClass = cards[id];
-            return new CardClass();
-        });
+        const enemy = enemyDeck
+            .filter((x) => x !== null)
+            .map(({ id }) => {
+                const CardClass = cards[id];
+                return new CardClass();
+            });
 
         gameRef.current = new Game(player, enemy);
         updateCardData();
@@ -108,9 +120,7 @@ export function Simulation({ enemyDeck, playerDeck, setStage }: SimProps) {
             updateCardData();
             const state = gameRef.current!.gameState;
             if (state === GameState.Over) {
-                setTimeout(() => {
-                    setStage("complete");
-                }, 1000);
+                setTimeout(() => onFinish(gameRef.current!.winState), 1000);
                 if (timeout) {
                     clearInterval(timeout);
                 }

@@ -81,70 +81,18 @@ export async function createGame() {
     });
 }
 
-export async function addCardToDeck({
-    gameId,
-    cardId,
-    position,
-}: {
-    gameId: number;
-    cardId: string;
-    position: number;
-}) {
-    if (position >= 4)
-        throw new Error("Cannot change the card in this position.");
-
-    const player = await getPlayer();
-
-    if (!player) throw new Error("Must be logged in.");
-    invalidateGameCache(gameId);
-
-    await prisma.$transaction(async (tx) => {
-        const game = await tx.game.findUnique({
-            where: { playerId: player?.id, id: gameId },
-            include: {
-                rounds: {
-                    orderBy: { number: "desc" },
-                    take: 1,
-                },
-            },
-        });
-        const latestRound = game?.rounds[0];
-        if (!game || !latestRound) throw new Error("Game not found.");
-        if (game.status !== GameStatus.IN_PROGRESS)
-            throw new Error("Deck cannot be edited.");
-
-        await tx.deckCard.upsert({
-            where: {
-                deckId_position: { deckId: latestRound.playerDeckId, position },
-            },
-            create: {
-                id: cardId,
-                deckId: latestRound.playerDeckId,
-                position,
-            },
-            update: {
-                id: cardId,
-            },
-        });
-    });
+function parseDBDeck(cards: DeckCard[]): Deck {
+    const deck: Deck = Array.from({ length: 4 }, () => null);
+    for (const card of cards) {
+        deck[card.position] = card;
+    }
+    return deck;
 }
 
-export async function getGameState(gameId: number) {
-    const cacheKey = `game:${gameId}`;
-    const cached = await redis.get(cacheKey);
-    if (cached) {
-        console.log(`[CACHE HIT] ${cacheKey}`);
-        return JSON.parse(cached);
-    }
-
-    console.log(`[CACHE MISS] ${cacheKey} - fetching from DB`);
-
-    const player = await getPlayer({ shouldRedirect: false });
-    if (!player) return null;
-
+async function getGameStateDB(gameId: number, playerId: number) {
     const game = await prisma.game.findUnique({
         where: {
-            playerId: player.id,
+            playerId,
             id: gameId,
         },
         include: {
@@ -162,89 +110,7 @@ export async function getGameState(gameId: number) {
                             },
                         },
                     },
-                },
-            },
-        },
-    });
-
-    const latestRound = game?.rounds[game.rounds.length - 1];
-    if (!game || !latestRound) return null;
-
-    const deck: Deck = Array.from({ length: 4 }, () => null);
-    for (const card of latestRound.playerDeck.cards) {
-        deck[card.position] = card;
-    }
-
-    const gameState = {
-        id: game.id,
-        status: game.status,
-        deck,
-        rounds: game.rounds,
-        shop: latestRound.shopCards,
-        roundStatus: latestRound.status,
-        bytes: latestRound.bytes,
-        health: latestRound.health,
-    };
-
-    await redis.set(cacheKey, JSON.stringify(gameState), "EX", 300); // 5 min ttl
-    console.log(`[CACHE SET] ${cacheKey} - expires in 5 min`);
-    return gameState;
-}
-
-export async function buyCard(gameId: number, cardCost: number) {
-    const player = await getPlayer({ shouldRedirect: false });
-    if (!player) return { success: false, error: "Player not found" };
-
-    const game = await prisma.game.findUnique({
-        where: {
-            playerId: player.id,
-            id: gameId,
-        },
-        include: {
-            rounds: {
-                orderBy: { number: "asc" },
-            },
-        },
-    });
-
-    if (!game || game.rounds.length === 0) {
-        return { success: false, error: "Game or round not found" };
-    }
-    invalidateGameCache(gameId);
-
-    const latestRound = game.rounds[game.rounds.length - 1];
-    const newBytes = latestRound.bytes - cardCost;
-
-    if (newBytes < 0) {
-        return { success: false, error: "Not enough bytes" };
-    }
-
-    await prisma.round.update({
-        where: { id: latestRound.id },
-        data: { bytes: newBytes },
-    });
-
-    return { success: true, bytes: newBytes };
-}
-
-export async function sellCard(
-    gameId: number,
-    position: number,
-    refundAmount: number,
-) {
-    const player = await getPlayer({ shouldRedirect: false });
-    if (!player) return { success: false, error: "Player not found" };
-
-    const game = await prisma.game.findUnique({
-        where: {
-            playerId: player.id,
-            id: gameId,
-        },
-        include: {
-            rounds: {
-                orderBy: { number: "asc" },
-                include: {
-                    playerDeck: {
+                    enemyDeck: {
                         include: {
                             cards: {
                                 orderBy: { position: "asc" },
@@ -256,41 +122,200 @@ export async function sellCard(
         },
     });
 
-    if (!game || game.rounds.length === 0) {
-        return { success: false, error: "Game or round not found" };
-    }
-    invalidateGameCache(gameId);
+    const latestRound = game?.rounds[game.rounds.length - 1];
+    if (!game || !latestRound) return null;
 
-    const latestRound = game.rounds[game.rounds.length - 1];
-    const deckId = latestRound.playerDeck.id;
-    const cards = latestRound.playerDeck.cards;
+    const playerDeck = parseDBDeck(latestRound.playerDeck.cards);
+    const enemyDeck = parseDBDeck(latestRound.enemyDeck.cards);
 
-    const cardToRemove = cards.find((c) => c.position === position);
-    if (!cardToRemove) {
-        return { success: false, error: "No card found at that position" };
-    }
-
-    await prisma.deckCard.delete({
-        where: {
-            deckId_position: {
-                deckId,
-                position,
-            },
-        },
-    });
-
-    const newBytes = latestRound.bytes + refundAmount;
-    await prisma.round.update({
-        where: { id: latestRound.id },
-        data: { bytes: newBytes },
-    });
-
-    return { success: true, bytes: newBytes };
+    return {
+        id: game.id,
+        playerId,
+        status: game.status,
+        playerDeck,
+        enemyDeck,
+        rounds: game.rounds,
+        shop: latestRound.shopCards,
+        roundStatus: latestRound.status,
+        bytes: latestRound.bytes,
+        health: latestRound.health,
+    };
 }
 
 export type ClientGameState = NonNullable<
-    Awaited<ReturnType<typeof getGameState>>
+    Awaited<ReturnType<typeof getGameStateDB>>
 >;
+
+export async function getGameState(gameId: number) {
+    const player = await getPlayer({ shouldRedirect: false });
+    if (!player) return null;
+
+    const cacheKey = `game:${gameId}`;
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+        console.log(`[CACHE HIT] ${cacheKey}`);
+        const state = JSON.parse(cached) as ClientGameState;
+        if (state.playerId !== player.id) return null;
+        return state;
+    }
+
+    console.log(`[CACHE MISS] ${cacheKey} - fetching from DB`);
+
+    const gameState = await getGameStateDB(gameId, player.id);
+    if (!gameState) return null;
+
+    await redis.set(cacheKey, JSON.stringify(gameState), "EX", 300); // 5 min ttl
+    console.log(`[CACHE SET] ${cacheKey} - expires in 5 min`);
+    return gameState;
+}
+
+export async function buyCard(
+    gameId: number,
+    cardId: string,
+    position: number,
+) {
+    const player = await getPlayer({ shouldRedirect: false });
+    if (!player) return { success: false as const, error: "Player not found" };
+
+    const result = await prisma.$transaction(async (tx) => {
+        const game = await tx.game.findUnique({
+            where: {
+                playerId: player.id,
+                id: gameId,
+            },
+            include: {
+                rounds: {
+                    orderBy: { number: "desc" },
+                    where: { status: RoundStatus.IN_PROGRESS },
+                    select: { id: true, playerDeckId: true },
+                    take: 1,
+                },
+            },
+        });
+
+        const latestRound = game?.rounds[0];
+        if (!latestRound)
+            return {
+                success: false as const,
+                error: "Game or round not found",
+            };
+
+        const cardCost = cards[cardId].metadata.price;
+        try {
+            const { bytes: newBytes } = await tx.round.update({
+                where: {
+                    id: latestRound.id,
+                    status: RoundStatus.IN_PROGRESS,
+                    bytes: { gte: cardCost },
+                },
+                data: {
+                    bytes: {
+                        decrement: cardCost,
+                    },
+                    playerDeck: {
+                        update: {
+                            cards: {
+                                upsert: {
+                                    where: {
+                                        deckId_position: {
+                                            deckId: latestRound.playerDeckId,
+                                            position,
+                                        },
+                                    },
+                                    create: { id: cardId, position },
+                                    update: { id: cardId },
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+
+            return { success: true as const, bytes: newBytes };
+        } catch (error) {
+            if (
+                typeof error === "object" &&
+                error !== null &&
+                "code" in error &&
+                error.code === "P2025"
+            ) {
+                return {
+                    success: false as const,
+                    error: "Insufficient bytes to buy card",
+                };
+            }
+            throw error;
+        }
+    });
+
+    if (result.success) invalidateGameCache(gameId);
+
+    return result;
+}
+
+export async function sellCard(
+    gameId: number,
+    position: number,
+    refundAmount: number,
+) {
+    const player = await getPlayer({ shouldRedirect: false });
+    if (!player) return { success: false as const, error: "Player not found" };
+
+    const result = await prisma.$transaction(async (tx) => {
+        const game = await tx.game.findUnique({
+            where: { id: gameId, playerId: player.id },
+            include: {
+                rounds: {
+                    orderBy: { number: "desc" },
+                    where: { status: RoundStatus.IN_PROGRESS },
+                    include: {
+                        playerDeck: {
+                            select: { id: true },
+                        },
+                    },
+                    take: 1,
+                },
+            },
+        });
+
+        const latestRound = game?.rounds[0];
+        if (!latestRound)
+            return {
+                success: false as const,
+                error: "Game or round not found",
+            };
+
+        const { bytes: newBytes } = await tx.round.update({
+            where: { id: latestRound.id, status: RoundStatus.IN_PROGRESS },
+            data: {
+                bytes: {
+                    increment: refundAmount,
+                },
+                playerDeck: {
+                    update: {
+                        cards: {
+                            delete: {
+                                deckId_position: {
+                                    deckId: latestRound.playerDeck.id,
+                                    position,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        return {
+            success: true as const,
+            bytes: newBytes,
+        };
+    });
+
+    if (result.success) invalidateGameCache(gameId);
+
+    return result;
+}
 
 function winStateToRoundStatus(winState: WinState): RoundStatus {
     switch (winState) {
@@ -306,7 +331,7 @@ function winStateToRoundStatus(winState: WinState): RoundStatus {
 export async function beginRound(gameId: number) {
     const player = await getPlayer({ shouldRedirect: false });
     if (!player) throw new Error("Must be logged in.");
-    invalidateGameCache(gameId);
+
     const gameState = await prisma.game.findUnique({
         where: { id: gameId },
         include: {
@@ -337,7 +362,7 @@ export async function beginRound(gameId: number) {
 
     while (game.gameState !== GameState.Over) game.step();
 
-    return prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx) => {
         const randomDeckId = await getRandomDeckId(tx);
 
         const newHealth =
@@ -387,6 +412,10 @@ export async function beginRound(gameId: number) {
             },
         });
     });
+
+    invalidateGameCache(gameId);
+
+    return result;
 }
 
 export async function getAverageGameLength() {
