@@ -7,16 +7,17 @@ import { beginRound, buyCard, ClientGameState, sellCard } from "~/actions";
 import { useEffect, useState } from "react";
 import { GameSummary } from "./game-summary";
 import { GameStatus } from "../generated/prisma";
-import { WinState } from "~/simulation/simulation";
 
 interface GameControllerProps {
     gameState: ClientGameState;
+    getGameState: () => Promise<ClientGameState>;
 }
 
 export type Stage = "shop" | "simulation" | "complete";
 
 export function GameController({
     gameState: defaultGameState,
+    getGameState,
 }: GameControllerProps) {
     const [gameState, setGameState] = useState(defaultGameState);
     const [stage, setStage] = useState<Stage>(
@@ -40,7 +41,6 @@ export function GameController({
                 health={gameState.health}
                 takeCard={async (cardId, position) => {
                     const res = await buyCard(gameState.id, cardId, position);
-                    console.log(res);
                     if (res.success) {
                         setGameState((gameState) => {
                             const newDeck = [...gameState.playerDeck];
@@ -95,19 +95,14 @@ export function GameController({
                 playerDeck={gameState.playerDeck.map((card) =>
                     card ? cards[card.id].metadata : null,
                 )}
-                onFinish={(winState) => {
-                    if (winState === WinState.Enemy) {
-                        const health = gameState.health - 1;
-                        setGameState((gameState) => ({
-                            ...gameState,
-                            health: gameState.health - 1,
-                        }));
-                        if (health === 1) {
-                            setStage("complete");
-                            return;
-                        }
-                    }
-                    setStage("shop");
+                onFinish={async () => {
+                    const gameState = await getGameState();
+                    setGameState(gameState);
+                    setStage(
+                        gameState.status === GameStatus.IN_PROGRESS
+                            ? "shop"
+                            : "complete",
+                    );
                 }}
             />
         );

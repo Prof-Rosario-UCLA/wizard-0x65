@@ -9,15 +9,7 @@ import {
     GameState,
     WinState,
 } from "~/simulation/simulation";
-import {
-    useEffect,
-    useRef,
-    useCallback,
-    useState,
-    Dispatch,
-    SetStateAction,
-} from "react";
-import { Stage } from "./game-controller";
+import { useEffect, useRef, useCallback, useState } from "react";
 
 interface SimPlayerProps {
     isPlayer: boolean;
