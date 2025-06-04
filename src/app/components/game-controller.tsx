@@ -96,9 +96,18 @@ export function GameController({
                     card ? cards[card.id].metadata : null,
                 )}
                 onFinish={(winState) => {
-                    if (winState === WinState.Enemy && gameState.health === 1)
-                        setStage("complete");
-                    else setStage("shop");
+                    if (winState === WinState.Enemy) {
+                        const health = gameState.health - 1;
+                        setGameState((gameState) => ({
+                            ...gameState,
+                            health: gameState.health - 1,
+                        }));
+                        if (health === 1) {
+                            setStage("complete");
+                            return;
+                        }
+                    }
+                    setStage("shop");
                 }}
             />
         );

@@ -336,6 +336,7 @@ export async function beginRound(gameId: number) {
         where: { id: gameId },
         include: {
             rounds: {
+                where: { status: RoundStatus.IN_PROGRESS },
                 orderBy: { number: "desc" },
                 take: 1,
                 include: {
@@ -347,8 +348,6 @@ export async function beginRound(gameId: number) {
     });
     const latestRound = gameState?.rounds[0];
     if (!latestRound) throw new Error("Game not found.");
-    if (latestRound.status !== RoundStatus.IN_PROGRESS)
-        throw new Error("Cannot begin a round that is not in progress.");
 
     const playerDeck = latestRound.playerDeck.cards.map((card: DeckCard) => {
         const Card = cards[card.id];
