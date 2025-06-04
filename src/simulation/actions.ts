@@ -39,6 +39,19 @@ export class ChangeHealthAction extends Action {
     }
 }
 
+export class KillCardAction extends Action {
+    card: GameCard;
+
+    constructor(game: Game, card: GameCard) {
+        super(game);
+        this.card = card;
+    }
+
+    exec(): void {
+        this.card.changeHealth(-this.card.health);
+    }
+}
+
 export class ChangeDamageAction extends Action {
     card: GameCard;
     amount: number;

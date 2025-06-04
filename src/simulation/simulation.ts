@@ -321,6 +321,14 @@ export class Game {
         } else if (this.enemyDeck.length === 0) {
             this.gameState = GameState.Over;
             this.winState = WinState.Player;
+        } else{
+            if (this.actions.length === 0) {
+                if(this.playerDeck[0].damage === 0 && this.enemyDeck[0].damage === 0) {
+                    // if both teams have no damage, it's a stalemate
+                    this.gameState = GameState.Over;
+                    this.winState = WinState.Stalemate;
+                }
+            }
         }
     }
 

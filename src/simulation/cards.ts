@@ -1,6 +1,7 @@
 import {
     ChangeDamageAction,
     ChangeHealthAction,
+    KillCardAction,
     SpawnCardAction,
     SwapHealthAction,
 } from "./actions";
@@ -90,7 +91,7 @@ export class UnrealCard extends CardBase {
 export class VimCard extends CardBase {
     static get metadata(): CardMetadata {
         return {
-            id: "vim",
+            id: "ide_vim",
             name: "Vim",
             description: `
                 Adds 1 ${strings.health} to all friendly cards on round start.
@@ -116,7 +117,7 @@ export class EmacsCard extends VimCard {
     static get metadata(): CardMetadata {
         return {
             ...super.metadata,
-            id: "emacs",
+            id: "ide_emacs",
             name: "Emacs",
         };
     }
@@ -126,7 +127,7 @@ export class NeovimCard extends VimCard {
     static get metadata(): CardMetadata {
         return {
             ...super.metadata,
-            id: "neovim",
+            id: "ide_neovim",
             name: "Neovim",
             price: 4,
         };
@@ -150,7 +151,7 @@ export class TempleOSCard extends CardBase {
     onEvent(event: GameEvent): void {
         if (event instanceof RoundStartEvent) {
             this.game.enqueueAction(
-                new ChangeHealthAction(this.game, this, -this.health),
+                new KillCardAction(this.game, this),
             );
         }
     }
