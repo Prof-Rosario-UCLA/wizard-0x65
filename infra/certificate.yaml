@@ -1,0 +1,7 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+    name: web-app-certificate
+spec:
+    domains:
+        - team1.cs144.org

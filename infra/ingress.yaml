@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: web-app
+    annotations:
+        kubernetes.io/ingress.global-static-ip-name: "wizard-0x65-app"
+        networking.gke.io/managed-certificates: "web-app-certificate"
+        kubernetes.io/ingress.class: "gce"
+        # Automatic HTTP to HTTPS redirect
+        # networking.gke.io/v1.FrontendConfig: "default-redirect-config" # Once certificate is ready, uncomment and redeploy this
+spec:
+    rules:
+        - host: team1.cs144.org
+          http:
+              paths:
+                  - path: /*
+                    pathType: ImplementationSpecific
+                    backend:
+                        service:
+                            name: web-app
+                            port:
+                                number: 80
