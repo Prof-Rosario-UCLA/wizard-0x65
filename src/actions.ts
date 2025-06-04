@@ -206,7 +206,11 @@ export async function buyCard(gameId: number, cardCost: number) {
     return { success: true, bytes: newBytes };
 }
 
-export async function sellCard(gameId: number, refundAmount: number) {
+export async function sellCard(
+    gameId: number,
+    position: number,
+    refundAmount: number,
+) {
     const player = await getPlayer({ shouldRedirect: false });
     if (!player) return { success: false, error: "Player not found" };
 
@@ -236,6 +240,22 @@ export async function sellCard(gameId: number, refundAmount: number) {
     }
 
     const latestRound = game.rounds[game.rounds.length - 1];
+    const deckId = latestRound.playerDeck.id;
+    const cards = latestRound.playerDeck.cards;
+
+    const cardToRemove = cards.find((c) => c.position === position);
+    if (!cardToRemove) {
+        return { success: false, error: "No card found at that position" };
+    }
+
+    await prisma.deckCard.delete({
+        where: {
+            deckId_position: {
+                deckId,
+                position,
+            },
+        },
+    });
 
     const newBytes = latestRound.bytes + refundAmount;
     await prisma.round.update({

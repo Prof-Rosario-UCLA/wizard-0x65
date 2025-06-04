@@ -73,7 +73,11 @@ export function GameController({
 
                     const refundAmount = cards[card.id].metadata.price;
 
-                    const res = await sellCard(gameState.id, refundAmount);
+                    const res = await sellCard(
+                        gameState.id,
+                        position,
+                        refundAmount,
+                    );
 
                     if (res.success) {
                         setGameState((gameState) => {
