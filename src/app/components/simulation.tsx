@@ -16,7 +16,7 @@ interface SimPlayerProps {
     deck: CardProps[];
 }
 
-function SimulationPlayer({ isPlayer, deck }: SimPlayerProps) {
+export function SimulationPlayer({ isPlayer, deck }: SimPlayerProps) {
     return (
         <>
             <section

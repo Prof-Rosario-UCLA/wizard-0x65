@@ -15,6 +15,7 @@ const baseConfig: NextConfig = {
                 "~": path.resolve(__dirname, "src"),
             },
         };
+        config.resolve.fallback = { fs: false };
 
         return config;
     },
