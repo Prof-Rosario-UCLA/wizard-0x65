@@ -22,5 +22,20 @@ spec:
                         value: postgres://postgres:password@postgres:5432/wizard
                       - name: REDIS_URL
                         value: redis://redis:6379
+                      - name: AUTH_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                name: auth
+                                key: secret
+                      - name: AUTH_GOOGLE_ID
+                        valueFrom:
+                            secretKeyRef:
+                                name: auth
+                                key: google-id
+                      - name: AUTH_GOOGLE_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                name: auth
+                                key: google-secret
                   ports:
                       - containerPort: 3000

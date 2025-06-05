@@ -77,5 +77,14 @@ kubectl port-forward service/web-app 3000:3000
 
 This will expose a port `localhost:3000` on your computer that corresponds to the pod running in the cluster.
 
+Once the cluster is running, you need to create the secrets for the app before you can deploy it
+
+```sh
+kubectl create secret generic auth \
+    --from-literal=secret="AUTH_SECRET" \
+    --from-literal=google-id=AUTH_GOOGLE_ID \
+    --from-literal=google-secret=AUTH_GOOGLE_SECRET
+```
+
 RACHEL'S NOTE:
 I had to run `export PORT=3000` to build and start.
