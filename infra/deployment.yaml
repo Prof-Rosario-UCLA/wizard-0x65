@@ -37,5 +37,8 @@ spec:
                             secretKeyRef:
                                 name: auth
                                 key: google-secret
+                      - name: AUTH_TRUST_HOST
+                        value: "true"
+
                   ports:
                       - containerPort: 3000
