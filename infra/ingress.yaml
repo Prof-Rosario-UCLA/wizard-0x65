@@ -6,8 +6,7 @@ metadata:
         kubernetes.io/ingress.global-static-ip-name: "wizard-0x65-app"
         networking.gke.io/managed-certificates: "web-app-certificate"
         kubernetes.io/ingress.class: "gce"
-        # Automatic HTTP to HTTPS redirect
-        # networking.gke.io/v1.FrontendConfig: "default-redirect-config" # Once certificate is ready, uncomment and redeploy this
+        networking.gke.io/v1.FrontendConfig: "default-redirect-config"
 spec:
     rules:
         - host: team1.cs144.org

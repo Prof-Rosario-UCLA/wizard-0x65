@@ -40,7 +40,7 @@ spec:
                       - name: AUTH_TRUST_HOST
                         value: "true"
                       - name: AUTH_URL
-                        value: "http://team1.cs144.org"
+                        value: "https://team1.cs144.org"
 
                   ports:
                       - containerPort: 3000
