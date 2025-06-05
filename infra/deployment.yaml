@@ -39,6 +39,8 @@ spec:
                                 key: google-secret
                       - name: AUTH_TRUST_HOST
                         value: "true"
+                      - name: AUTH_URL
+                        value: "http://team1.cs144.org"
 
                   ports:
                       - containerPort: 3000
