@@ -11,9 +11,10 @@ import {
 import { cards } from "./simulation/cards";
 import { Deck } from "./app/types";
 import { Game, GameState, WinState } from "./simulation/simulation";
-import redis from "./redis";
+import { getRedis } from "./redis";
 
 export async function invalidateGameCache(gameId: number) {
+    const redis = getRedis();
     await redis.del(`game:${gameId}`);
 }
 
@@ -150,6 +151,7 @@ export async function getGameState(gameId: number) {
     const player = await getPlayer({ shouldRedirect: false });
     if (!player) return null;
 
+    const redis = getRedis();
     const cacheKey = `game:${gameId}`;
     const cached = await redis.get(cacheKey);
     if (cached) {

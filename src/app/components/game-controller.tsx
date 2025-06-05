@@ -107,12 +107,5 @@ export function GameController({
             />
         );
 
-    if (stage === "complete")
-        return (
-            <GameSummary
-                deck={gameState.playerDeck}
-                rounds={gameState.rounds}
-                setStage={setStage}
-            />
-        );
+    if (stage === "complete") return <GameSummary rounds={gameState.rounds} />;
 }

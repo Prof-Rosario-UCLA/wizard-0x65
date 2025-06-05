@@ -3,6 +3,8 @@ import { Button } from "./components/button";
 import Link from "next/link";
 import { StartGameButton } from "./components/start-game-button";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
     const player = await getPlayer({ shouldRedirect: false });
 

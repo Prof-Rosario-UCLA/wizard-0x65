@@ -1,31 +1,14 @@
-import { cards } from "~/simulation/cards";
-import { Deck } from "../types";
-import { Card } from "./card";
 import { Round, RoundStatus } from "../generated/prisma";
-import { Dispatch, Fragment, SetStateAction } from "react";
-import { Stage } from "./game-controller";
-import { Button } from "./button";
+import { Fragment } from "react";
 
 interface GameSummaryProps {
-    deck: Deck;
     rounds: Round[];
-    setStage: Dispatch<SetStateAction<Stage>>;
 }
-export function GameSummary({ deck, rounds, setStage }: GameSummaryProps) {
+
+export function GameSummary({ rounds }: GameSummaryProps) {
     return (
         <div className="flex flex-col gap-4 m-4">
             <h2 className="text-3xl">Game Over</h2>
-            {/* <div>
-                <h2 className="text-2xl">Final Deck</h2>
-                <div className="inline-grid grid-cols-4 gap-2">
-                    {deck.map((card, i) => {
-                        if (!card) return null;
-                        return (
-                            <Card key={i} metadata={cards[card.id].metadata} />
-                        );
-                    })}
-                </div>
-            </div> */}
             <div className="flex flex-col gap-2">
                 <h3 className="text-2xl">Rounds</h3>
                 <div>
