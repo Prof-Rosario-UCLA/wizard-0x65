@@ -41,7 +41,7 @@ model Round {
   gameId Int
   game   Game @relation(fields: [gameId], references: [id])
 
-  playerDeckId Int
+  playerDeckId Int  @unique
   enemyDeckId  Int
   playerDeck   Deck @relation("PlayerDeck", fields: [playerDeckId], references: [id])
   enemyDeck    Deck @relation("EnemyDeck", fields: [enemyDeckId], references: [id])
@@ -66,9 +66,10 @@ enum RoundStatus {
 model Deck {
   id Int @id @default(autoincrement())
 
-  cards        DeckCard[]
-  playerRounds Round[]    @relation("PlayerDeck")
-  enemyRounds  Round[]    @relation("EnemyDeck")
+  cards DeckCard[]
+
+  playerRound Round?  @relation("PlayerDeck")
+  enemyRounds Round[] @relation("EnemyDeck")
 }
 
 model DeckCard {
