@@ -1,4 +1,3 @@
-// next.config.ts
 import withPWA from "next-pwa";
 import type { NextConfig } from "next";
 import path from "path";
@@ -9,7 +8,6 @@ const baseConfig: NextConfig = {
     webpack: (config) => {
         config.experiments.asyncWebAssembly = true;
 
-        // Add alias for "~"
         config.resolve = {
             ...config.resolve,
             alias: {
@@ -17,6 +15,7 @@ const baseConfig: NextConfig = {
                 "~": path.resolve(__dirname, "src"),
             },
         };
+        config.resolve.fallback = { fs: false };
 
         return config;
     },

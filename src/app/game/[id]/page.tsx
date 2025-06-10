@@ -7,12 +7,22 @@ export default async function GamePage({
     params: Promise<{ id: string }>;
 }) {
     const { id } = await params;
-    const gameState = await getGameState(Number.parseInt(id));
+    const parsedId = Number.parseInt(id);
+    const gameState = await getGameState(parsedId);
     if (!gameState) return <div>Game not found.</div>;
 
     return (
         <main className="h-full">
-            <GameController gameState={gameState} />
+            <GameController
+                gameState={gameState}
+                getGameState={async () => {
+                    "use server";
+                    const gameState = await getGameState(parsedId);
+                    if (!gameState) throw new Error("Game not found.");
+
+                    return gameState;
+                }}
+            />
         </main>
     );
 }

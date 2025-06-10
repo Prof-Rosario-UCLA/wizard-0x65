@@ -1,10 +1,12 @@
 import Redis from "ioredis";
 
-const redisUrl = process.env.REDIS_URL;
-if (!redisUrl) {
-    throw new Error("REDIS_URL is not set in environment variables");
+let redis: Redis | null = null;
+
+export function getRedis() {
+    if (!process.env.REDIS_URL)
+        throw new Error("REDIS_URL environment variable is not set");
+
+    if (!redis) redis = new Redis(process.env.REDIS_URL!);
+
+    return redis;
 }
-
-const redis = new Redis(redisUrl);
-
-export default redis;

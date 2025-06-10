@@ -1,26 +1,46 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web-app
-  labels:
-    app: web-app
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: web-app
-  template:
-    metadata:
-      labels:
+    name: web-app
+    labels:
         app: web-app
-    spec:
-      containers:
-        - name: web-app
-          image: web-app
-          env:
-            - name: DATABASE_URL
-              value: postgres://postgres:password@postgres:5432/postgres
-            - name: REDIS_URL
-              value: redis://redis:6379
-          ports:
-            - containerPort: 3000
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: web-app
+    template:
+        metadata:
+            labels:
+                app: web-app
+        spec:
+            containers:
+                - name: web-app
+                  image: web-app
+                  env:
+                      - name: DATABASE_URL
+                        value: postgres://postgres:password@postgres:5432/wizard
+                      - name: REDIS_URL
+                        value: redis://redis:6379
+                      - name: AUTH_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                name: auth
+                                key: secret
+                      - name: AUTH_GOOGLE_ID
+                        valueFrom:
+                            secretKeyRef:
+                                name: auth
+                                key: google-id
+                      - name: AUTH_GOOGLE_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                name: auth
+                                key: google-secret
+                      - name: AUTH_TRUST_HOST
+                        value: "true"
+                      - name: AUTH_URL
+                        value: "https://team1.cs144.org"
+
+                  ports:
+                      - containerPort: 3000
