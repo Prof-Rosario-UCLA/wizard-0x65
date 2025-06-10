@@ -48,7 +48,7 @@ export function Shop({
                 }
             }}
         >
-            <article className="flex flex-col justify-center items-center h-screen w-screen p-4">
+            <article className="flex flex-col justify-center items-center sm:h-screen h-[90vh] w-screen p-4">
                 <Heading>Shop</Heading>
                 <section className="flex flex-col sm:flex-row w-full h-full overflow-x-hidden overflow-y-scroll gap-4 bg-primary-lightest p-5 justify-between">
                     <figure className="grid grid-cols-2 md:grid-cols-4 gap-4">
